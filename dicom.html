@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DICOM Viewer — Sundar's Coronary Analysis</title>
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.cine-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px; margin-top: 12px;
+}
+.cine-card {
+  border-radius: 8px; border: 1.5px solid #E2E8F0;
+  background: #FFFFFF; overflow: hidden;
+}
+.cine-card .cine-header {
+  padding: 10px 12px; border-bottom: 1px solid #F1F5F9;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+}
+.cine-card .cine-name { font-size: 12px; font-weight: 700; color: #0F172A; }
+.cine-card .cine-meta { font-size: 10px; color: #6B7280; margin-top: 2px; }
+.cine-card .cine-body { padding: 10px 12px; }
+.cine-card .cine-note { font-size: 10px; color: #475569; line-height: 1.5; }
+.drive-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  background: #0070F2; color: #FFFFFF; text-decoration: none;
+  border: none; cursor: pointer; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.drive-btn:hover { background: #0057D2; text-decoration: none; }
+.drive-btn.pending { background: #94A3B8; cursor: default; }
+.cine-card.lcx  { border-left: 4px solid #0070F2; }
+.cine-card.rca  { border-left: 4px solid #D97706; }
+.cine-card.post { border-left: 4px solid #059669; }
+.cine-card.proc { border-left: 4px solid #94A3B8; }
+.cine-card.excl { border-left: 4px solid #DC2626; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="brand">Sundar · <span>Coronary Analysis</span></div>
+  <a href="index.html"    class="nav-link">Overview</a>
+  <a href="analysis.html" class="nav-link">Architecture &amp; Pipeline</a>
+  <a href="images.html"   class="nav-link">Segmentation Gallery</a>
+  <a href="dicom.html"    class="nav-link active">DICOM Viewer</a>
+  <a href="report.html"   class="nav-link">Full Report</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <h1>DICOM Viewer — Raw Cine Access</h1>
+    <p>All 29 acquisitions from the hospital CD · Manipal Hospital Salem · 19 October 2026</p>
+  </div>
+
+  <div class="alert info" style="margin-bottom:16px;">
+    <strong>How to use</strong>
+    Each cine opens in a browser-based DICOM viewer (no software installation required).
+    You can scroll through frames, adjust window/level, zoom, and pan directly in the browser.
+    Files are hosted on Google Drive — a Google account is not required to view them, but
+    Sundar must have shared the folder with your email for access.
+  </div>
+
+  <div class="alert warning" style="margin-bottom:16px;">
+    <strong>Links pending — folder share in progress</strong>
+    Google Drive links will be populated once Sundar has shared the DICOM folder.
+    The cine inventory below is complete and accurate. Contact Sundar if you need immediate access.
+  </div>
+
+  <!-- Legend -->
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:11px;color:#475569;">
+    <span><span style="display:inline-block;width:12px;height:12px;background:#0070F2;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>LCX diagnostic</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:#D97706;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>RCA</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:#059669;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Post-stent diagnostic</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:#94A3B8;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Procedural / fluoroscopy</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:#DC2626;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>Excluded from QCA</span>
+  </div>
+
+  <div class="cine-grid">
+
+    <div class="cine-card excl">
+      <div class="cine-header">
+        <div>
+          <div class="cine-name">173435 · Spider / LAO 45° CAU 29° <span class="tag closed">excluded</span></div>
+          <div class="cine-meta">31 frames · Pre-stent · LCX bifurcation view · SID missing</div>
+        </div>
+        <a class="drive-btn pending" href="#">Open ↗</a>
+      </div>
+      <div class="cine-body">
+        <div class="cine-note">Spider view — opens up the LM bifurcation. 4 seed placement attempts failed to isolate mid-segment LCX. Best mask preserved but not validated. Cardiologist visual review of this cine is the key pending action.</div>
+      </div>
+    </div>
+
+    <div class="cine-card lcx">
+      <div class="cine-header">
+        <div>
+          <div class="cine-name">173443 · AP Caudal · 0° PA / 39° CAU</div>
+          <div class="cine-meta">44 frames · Pre-stent · Primary diagnostic LCX · SID 1167mm</div>
+        </div>
+        <a class="drive-btn pending" href="#">Open ↗</a>
+      </div>
+      <div class="cine-body">
+        <div class="cine-note">Primary pre-stent diagnostic cine. Segmentation failed — mask broke at lesion zone (contrast thinning + proximal anatomical overlap). Best frames: 22–23. Frame 22 used for all AP Caudal analysis attempts.</div>
+      </div>
+    </div>
+
+    <div class="cine-card excl">
+      <div class="cine-header">
+        <div>
+          <div class="cine-name">173451 · RAO Caudal · 30° RAO / 33° CAU <span class="tag closed">excluded</span></div>
+          <div class="cine-meta">45 frames · Pre-stent · Foreshortened LCX</div>
+        </div>
+        <a class="drive-btn pending" href="#">Open ↗</a>
+      </div>
+      <div class="cine-body">
+        <div class="cine-note">Excluded from QCA — significant foreshortening in this projection makes diameter measurement unreliable.</div>
+      </div>
+    </div>
+
+    <div class="cine-card lcx">
+      <div class="cine-header">
+        <div>
+          <div class="cine-name">173502 · AP Cranial · 0° PA / 38° CRA</div>
+          <div class="cine-meta">54 frames · Pre-stent · SID missing</div>
+        </div>
+        <a class="drive-btn pending" href="#">Open ↗</a>
+      </div>
+      <div class="cine-body">
+        <div class="cine-note">Not used in primary QCA — SID missing prevents calibrated measurement. Available for visual assessment.</div>
+      </div>
+    </div>
+
+    <div class="cine-card lcx">
+      <div class="cine-header">
+        <div>
+          <div class="cine-name">173515 · LAO Cranial · 31° LAO / 39° CRA</div>
+          <div class="cine-meta">56 frames · Pre-stent · LAD view · SID 1209mm</div>
+        </div>
+        <a class="drive-btn pending" href="#">Open ↗</a>
+      </div>
+      <div class="cine-body">
+        <div class="cine-note">Used for LAD analysis (frames 17 and 22). Branch identity (LAD mainstem vs diagonal) unresolved. Cardiologist tracing from vessel origin needed.</div>
+      </div>
+    </div>
+
+    <div class="cine-card rca">
+      <div class="cine-header">
+        <div>
+          <div class="cine-name">173602 · RCA · LAO 46° flat <span class="tag unverif">mislabelled on CD</span></div>
+          <div class="cine-meta">33 frames · RCA primary view · SID 1054mm</div>
+        </div>
+        <a class="drive-btn pending" href="#">Open ↗</a>
+      </div>
+      <div class="cine-body">
+        <div class="cine-note">Labelled "Left Coronary 15fps" on CD — protocol preset not changed when cardiologist swapped to RCA catheter. Confirmed RCA by Gemini DICOM analysis and visual inspection. Scripted QCA: 28–35% proximal stenosis. Frame 17 = peak contrast.</div>
+      </div>
+    </div>
+
+    <div class="cine-card rca">
+      <div class="cine-header">
+        <div>
+          <div class="cine-name">173610 · RCA · LAO 27° CRA 28° <span class="tag unverif">mislabelled on CD</span></div>
+          <div class="cine-meta">44 frames · RCA distal crux view · SID 1096mm</div>
+        </div>
+        <a class="drive-btn pending" href="#">Open ↗</a>
+      </div>
+      <div class="cine-body">
+        <div class="cine-note">Second RCA cine — shows distal bifurcation into PDA and posterolateral branches. AngioPy run produced invalid result. Frame 30 = peak contrast at crux.</div>
+      </div>
+    </div>
+
+    <div class="cine-card proc">
+      <div class="cine-header">
+        <div>
+          <div class="cine-name">174420 – 174715 · Procedural block</div>
+          <div class="cine-meta">7 acquisitions (fluoroscopy + 1 cine) · Wire / balloon in vessel</div>
+        </div>
+        <a class="drive-btn pending" href="#">Open ↗</a>
+      </div>
+      <div class="cine-body">
+        <div class="cine-note">Peri-procedural acquisitions including wire placement, balloon inflation, stent deployment. Not used for QCA. Run 11 (174506, 68 frames) is a cine — content (wire/balloon presence) not fully characterised.</div>
+      </div>
+    </div>
+
+    <div class="cine-card post">
+      <div class="cine-header">
+        <div>
+          <div class="cine-name">175254 · AP Caudal post-stent · Primary</div>
+          <div class="cine-meta">58 frames · Post-stent diagnostic · SID 1129mm · 17:52</div>
+        </div>
+        <a class="drive-btn pending" href="#">Open ↗</a>
+      </div>
+      <div class="cine-body">
+        <div class="cine-note">Primary post-stent diagnostic cine. Contrast window frames 8–18. Multi-frame mean lumen 2.35mm (SD 0.23mm). Single-frame MLD withdrawn — endpoint artefact in all frames. Stent struts visible altering lumen boundary.</div>
+      </div>
+    </div>
+
+    <div class="cine-card post">
+      <div class="cine-header">
+        <div>
+          <div class="cine-name">174752 – 175337 · Post-procedural block</div>
+          <div class="cine-meta">8 acquisitions · Various AP Caudal angles · Post-stent checks</div>
+        </div>
+        <a class="drive-btn pending" href="#">Open ↗</a>
+      </div>
+      <div class="cine-body">
+        <div class="cine-note">Post-stent check cines and fluoroscopy. 175315 (19.5° PA / 2° CAU) confirmed post-PCI check cine with guidewire visible. 175337 (RAO Caudal post) used for cardiac cycle analysis only.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Full inventory table -->
+  <div class="section" style="margin-top:16px;">
+    <div class="section-title"><div class="dot" style="background:#334155;"></div>Complete Cine Inventory — All 29 Acquisitions</div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Acq. time</th><th>Type</th><th>Frames</th><th>PA (°)</th><th>SA (°)</th><th>SID (mm)</th><th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>173435</td><td>Cine</td><td>31</td><td>+45.6</td><td>−29.4</td><td class="withdrawn">missing</td><td>Spider / LM-bifurcation · excluded</td></tr>
+        <tr><td>173443</td><td>Cine</td><td>44</td><td>−4.1</td><td>−39.0</td><td>1167</td><td>AP Caudal pre-stent · primary diagnostic</td></tr>
+        <tr><td>173451</td><td>Cine</td><td>45</td><td>−29.8</td><td>−32.6</td><td>1140</td><td>RAO Caudal pre-stent · excluded (foreshortening)</td></tr>
+        <tr><td>173502</td><td>Cine</td><td>54</td><td>−0.2</td><td>+37.9</td><td class="withdrawn">missing</td><td>AP Cranial · not used</td></tr>
+        <tr><td>173515</td><td>Cine</td><td>56</td><td>−31.2</td><td>+38.8</td><td>1209</td><td>LAO Cranial · LAD analysis</td></tr>
+        <tr><td>173602</td><td>Cine</td><td>33</td><td>+46.3</td><td>+1.1</td><td>1054</td><td><strong>RCA</strong> · mislabelled on CD · primary RCA view</td></tr>
+        <tr><td>173610</td><td>Cine</td><td>44</td><td>+27.4</td><td>+27.7</td><td>1096</td><td><strong>RCA</strong> · mislabelled on CD · distal crux view</td></tr>
+        <tr><td>174420–174448</td><td>Fluoro</td><td>150/114/123</td><td>0</td><td>−34.7</td><td>—</td><td>Pre-/peri-procedural fluoroscopy</td></tr>
+        <tr><td>174506</td><td>Cine</td><td>68</td><td>0</td><td>−34.7</td><td>—</td><td>Peri-procedural · wire/balloon likely present · not analysed</td></tr>
+        <tr><td>174512–174715</td><td>Fluoro</td><td>68–150</td><td>0</td><td>−34.7</td><td>—</td><td>Procedural fluoroscopy</td></tr>
+        <tr><td>174752</td><td>Cine</td><td>51</td><td>0</td><td>−34.7</td><td>—</td><td>AP Caudal peri-/post-procedural</td></tr>
+        <tr><td>174926</td><td>Cine</td><td>42</td><td>0</td><td>−34.7</td><td>—</td><td>AP Caudal peri-/post-procedural</td></tr>
+        <tr><td>175028</td><td>Fluoro</td><td>91</td><td>0</td><td>−34.7</td><td>—</td><td>Post-procedural</td></tr>
+        <tr><td>175052</td><td>Cine</td><td>60</td><td>0</td><td>−34.7</td><td>—</td><td>AP Caudal post-procedural</td></tr>
+        <tr><td>175109</td><td>Cine</td><td>48</td><td>0</td><td>−34.7</td><td>—</td><td>AP Caudal post-procedural</td></tr>
+        <tr><td>175137</td><td>Cine</td><td>8</td><td>0</td><td>−34.7</td><td>—</td><td>AP Caudal · 8 frames only</td></tr>
+        <tr><td>175142–175155</td><td>Fluoro</td><td>59/25/105</td><td>0</td><td>−34.7</td><td>—</td><td>Post-procedural fluoroscopy</td></tr>
+        <tr><td>175209</td><td>Cine</td><td>35</td><td>0</td><td>−34.7</td><td>—</td><td>AP Caudal post-procedural</td></tr>
+        <tr><td><strong>175254</strong></td><td>Cine</td><td>58</td><td>0</td><td>−34.7</td><td>1129</td><td><strong>Primary post-stent diagnostic cine</strong></td></tr>
+        <tr><td>175315</td><td>Cine</td><td>69</td><td>+19.5</td><td>−2.0</td><td>—</td><td>Post-PCI check · guidewire visible · not used for QCA</td></tr>
+        <tr><td>175337</td><td>Cine</td><td>56</td><td>−26.0</td><td>−24.3</td><td>—</td><td>RAO Caudal post-stent · cardiac cycle analysis only</td></tr>
+      </tbody>
+    </table>
+    <p class="text-muted mt8">PA = primary angle (positive = LAO, negative = RAO). SA = secondary angle (positive = CRA, negative = CAU). SID = Source-to-Image Distance.</p>
+  </div>
+
+</div>
+</body>
+</html>

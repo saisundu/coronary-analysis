@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture &amp; Pipeline — Sundar's Coronary Analysis</title>
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.arch-frame {
+  width: 100%; border: none; border-radius: 8px;
+  display: block; background: #F5F6F7;
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="brand">Sundar · <span>Coronary Analysis</span></div>
+  <a href="index.html"    class="nav-link">Overview</a>
+  <a href="analysis.html" class="nav-link active">Architecture &amp; Pipeline</a>
+  <a href="images.html"   class="nav-link">Segmentation Gallery</a>
+  <a href="dicom.html"    class="nav-link">DICOM Viewer</a>
+  <a href="report.html"   class="nav-link">Full Report</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <h1>Architecture &amp; Analysis Pipeline</h1>
+    <p>System components, data flows, and the full 5-phase analysis pipeline — interactive view</p>
+  </div>
+
+  <div class="alert info" style="margin-bottom:16px;">
+    Use the <strong>View</strong> pills inside the diagram to switch between System Architecture (all agents + data stores)
+    and Analysis Pipeline (swimlane view of 5 phases across 6 actors).
+  </div>
+
+  <!-- Embedded interactive diagram -->
+  <div class="section" style="padding:0;overflow:hidden;">
+    <iframe
+      src="angiopy_architecture.html"
+      class="arch-frame"
+      id="arch-iframe"
+      scrolling="no"
+      onload="resizeIframe(this)"
+    ></iframe>
+  </div>
+
+  <!-- Static screenshots as fallback / print view -->
+  <div class="section" style="margin-top:16px;">
+    <div class="section-title"><div class="dot" style="background:#0070F2;"></div>System Architecture — Static View</div>
+    <img src="assets/arch_level0.png" class="full-img" alt="System Architecture diagram">
+  </div>
+
+  <div class="section">
+    <div class="section-title"><div class="dot" style="background:#7C3AED;"></div>Analysis Pipeline — Static View</div>
+    <img src="assets/arch_level1.png" class="full-img" alt="Analysis Pipeline swimlane diagram">
+  </div>
+
+</div>
+
+<script>
+function resizeIframe(iframe) {
+  try {
+    iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 32 + 'px';
+  } catch(e) {
+    iframe.style.height = '1100px';
+  }
+}
+// Also resize on window resize
+window.addEventListener('resize', function() {
+  var iframe = document.getElementById('arch-iframe');
+  if (iframe) resizeIframe(iframe);
+});
+</script>
+</body>
+</html>

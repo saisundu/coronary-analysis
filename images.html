@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Segmentation Gallery — Sundar's Coronary Analysis</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="brand">Sundar · <span>Coronary Analysis</span></div>
+  <a href="index.html"    class="nav-link">Overview</a>
+  <a href="analysis.html" class="nav-link">Architecture &amp; Pipeline</a>
+  <a href="images.html"   class="nav-link active">Segmentation Gallery</a>
+  <a href="dicom.html"    class="nav-link">DICOM Viewer</a>
+  <a href="report.html"   class="nav-link">Full Report</a>
+</nav>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <span id="lightbox-close">&times;</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <h1>Segmentation Gallery</h1>
+    <p>AngioPy overlay images, diameter profiles, and raw frames for all projections. Click any image to enlarge.</p>
+  </div>
+
+  <div class="alert info" style="margin-bottom:16px;">
+    Each overlay shows: <strong>left panel</strong> — seed points placed on the angiogram frame;
+    <strong>right panel</strong> — AngioPy segmentation mask with centreline and MLD marker.
+    Profile graphs show diameter (mm) vs. arc length (mm) along the vessel centreline.
+  </div>
+
+  <!-- ── LCX Pre-stent: AP Caudal ── -->
+  <div class="section">
+    <div class="section-title">
+      <div class="dot" style="background:#DC2626;"></div>
+      LCX Pre-stent · AP Caudal (Cine 173443) <span class="tag closed">segmentation failed</span>
+    </div>
+    <div class="alert danger">
+      <strong>Segmentation failed — no QCA value reported</strong>
+      Multiple seed placement attempts on frame indices 22 and 23. Mask broke into two disconnected
+      components at the lesion zone in all attempts. Cause: contrast thinning at tight stenosis plus
+      proximal LCX/LAD/LMCA anatomical overlap. The overlay images below are from the exploratory
+      attempts and are preserved for specialist review.
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="assets/seg_173443_f22_AP-Caudal-pre_overlay.png" alt="AP Caudal pre-stent overlay" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>AP Caudal · Frame 22 · Primary seeds</strong>
+          Overlay shows disconnected mask at proximal end. MLD marker at segmentation join — not anatomical.
+          Raw MLD 0.28mm; v2 interior clip 1.05mm. Range unresolved.
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/seg_173443_f22_AP-Caudal-pre_profile.png" alt="AP Caudal pre-stent profile" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>AP Caudal · Frame 22 · Diameter profile</strong>
+          Blue = measured diameter. Teal dashed = RVD. Red star = MLD (0.28mm raw, at 57.5% position).
+          Profile shape indicative but MLD value unreliable — segmentation artefact at lesion zone.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LCX Pre-stent: Spider ── -->
+  <div class="section">
+    <div class="section-title">
+      <div class="dot" style="background:#D97706;"></div>
+      LCX Pre-stent · Spider / LAO Caudal (Cine 173435, Frame 15) <span class="tag closed">excluded</span>
+    </div>
+    <div class="alert warning">
+      <strong>Excluded from cross-projection analysis</strong>
+      4 seed placement attempts. Best mask (Sundar-placed via web interface, 17 Nov 2026) produced a
+      connected strip but with monotonically tapering profile — distal endpoint artefact, no focal stenosis
+      recoverable. Original scripted run (63–64%) has unverified seed placement. Cardiologist review
+      of the cine required before any Spider measurement can be validated.
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="assets/seg_173435_f15_Spider-pre_overlay.png" alt="Spider pre-stent overlay" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>Spider · Frame 15 · Scripted run overlay</strong>
+          Original 7-seed scripted run. Seed 1 in LM/LCX junction complex; seed 7 on island.
+          Result 63–64% — unverified seed placement, not reproduced in manual re-seeding.
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/seg_173435_f15_Spider-pre_profile.png" alt="Spider pre-stent profile" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>Spider · Frame 15 · Diameter profile (scripted run)</strong>
+          Profile from original scripted run. For contrast: manual re-seeding (17 Nov)
+          produced monotonic taper proximal ~2.65mm → distal ~1.78mm, MLD at 99.9% — endpoint artefact.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LCX Pre-stent: Cross-projection summary ── -->
+  <div class="section">
+    <div class="section-title">
+      <div class="dot" style="background:#059669;"></div>
+      LCX Pre-stent · Cross-Projection QCA Summary (4 valid projections)
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="assets/task2_stenosis_comparison.png" alt="Cross-projection stenosis comparison" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>Cross-projection stenosis comparison</strong>
+          From original analysis. Orange dashed = 70% threshold. Note: AP Caudal bars are
+          from failed segmentation (not used). LAO flat and LAO Cranial bars are RCA, not LCX (withdrawn).
+          4 valid projections: RAO CRA, RAO CAU, LAO CRA, LAO CAU.
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/task6_qca_figure.png" alt="QCA task 6 figure" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>QCA analysis figure</strong>
+          Corrected QCA results across projections after audit (5 Nov 2026).
+          pixel_mm = 0.1694 mm/px for all LCX projections.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LCX Post-stent ── -->
+  <div class="section">
+    <div class="section-title">
+      <div class="dot" style="background:#0070F2;"></div>
+      LCX Post-stent · AP Caudal (Cine 175254)
+    </div>
+    <div class="alert warning">
+      <strong>Single-frame MLD withdrawn — endpoint artefact in all frames</strong>
+      Every segmentation of the post-stent vessel produced near-zero MLD at the distal skeleton tip.
+      AngioPy was not trained on stented vessels (metal struts alter lumen boundary appearance).
+      Multi-frame mean lumen reported instead: 2.35mm across 11 frames (frames 8–18).
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="assets/seg_175254_f14_AP-Caudal-post_overlay.png" alt="Post-stent overlay" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>Post-stent · Frame 14 · Overlay</strong>
+          Stented segment visible — vessel appears wider and straighter.
+          Stent: Xience Sky 3.0×28mm in LCX extending into OM branch.
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/seg_175254_f14_AP-Caudal-post_profile.png" alt="Post-stent profile" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>Post-stent · Frame 14 · Diameter profile</strong>
+          Red star (MLD) at 27.9mm — near distal tip. This is endpoint artefact, not a real narrowing.
+          Vessel runs 1.5–2.5mm through most of its length.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LAD ── -->
+  <div class="section">
+    <div class="section-title">
+      <div class="dot" style="background:#1b90ff;"></div>
+      LAD · LAO Cranial (Cine 173515) <span class="tag unverif">unverified</span>
+    </div>
+    <div class="alert warning">
+      <strong>Branch identity unresolved — result not validated</strong>
+      Two neighbouring descending traces visible in the seed region. Branch identity (LAD mainstem
+      vs diagonal) could not be established from this projection alone. Computational result
+      30–38% is concordant with clinical ~30% but seed correction has not been made.
+      An interventional cardiologist tracing each vessel from its origin in the full cine is required.
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="assets/task7_173515_f17_LAD_overlay.png" alt="LAD frame 17 overlay" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>LAD · Frame 17 · Overlay</strong>
+          MLD 0.65mm, stenosis 38.1%. Seeds placed on mid-to-distal LAD only — proximal
+          bifurcation zone excluded due to overlap with diagonal branch.
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/task7_173515_f22_LAD_overlay.png" alt="LAD frame 22 overlay" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>LAD · Frame 22 · Overlay</strong>
+          MLD 0.76mm, stenosis 30.3% — matches clinical report of ~30% exactly.
+          Branch identity still unresolved from overlay alone.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RCA ── -->
+  <div class="section">
+    <div class="section-title">
+      <div class="dot" style="background:#D97706;"></div>
+      RCA · LAO 46° (Cine 173602) — Mislabelled as LCA on hospital CD
+    </div>
+    <div class="alert info">
+      <strong>RCA cines identified by Gemini 2.5 Pro</strong>
+      Cines 173602 and 173610 were labelled "Left Coronary 15 fps" on the CD — standard Philips
+      Azurion behaviour when the protocol preset is not changed between catheter swaps.
+      Visual inspection confirmed these are RCA. Scripted QCA: 28–35% proximal stenosis,
+      concordant with clinical ~30%.
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="assets/run06_173602_fr017.png" alt="RCA raw frame" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>RCA · Cine 173602 · Frame 17 (peak contrast)</strong>
+          Raw DICOM frame. Catheter tip enters from top-centre engaging RCA ostium.
+          Single C-shaped trunk coursing down right side of heart. Clearly RCA anatomy.
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/run07_173610_fr030.png" alt="RCA distal frame" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>RCA · Cine 173610 · Frame 30 (LAO 27° Cranial)</strong>
+          Distal RCA bifurcation into PDA and posterolateral branches visible at bottom of frame.
+          Dominant RCA confirmed.
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/RCA_run6_seeding_report.png" alt="RCA scripted run seeding report" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>RCA · Frame 18 · Scripted run</strong>
+          Numbered seed placement (left), AngioPy segmentation (centre), diameter profile (right).
+          Dip at ~39mm arc: MLD 1.855mm, RVD 2.57mm, stenosis 27.8% (28–35% range depending on reference).
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/RCA-LAO46-manual-v2-fr16_overlay.png" alt="RCA manual seeding overlay" onclick="openLightbox(this.src)">
+        <div class="gallery-caption">
+          <strong>RCA · Frame 16 · Patient-placed seeds (17 Nov 2026)</strong>
+          Sundar placed seeds interactively via AngioPy web interface. Single connected C-shaped
+          trunk, no disconnected islands. Proximal RVD 2.97mm — most reliable RCA measurement.
+          MLD at distal endpoint — taper artefact, not stenosis.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+</body>
+</html>

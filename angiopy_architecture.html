@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AngioPy Self-QCA: System Architecture</title>
+<style>
+/* ── Reset ───────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #F5F6F7;
+  color: #1E293B;
+  font-size: 13px;
+  padding: 20px 24px 32px;
+  min-width: 900px;
+}
+
+/* ── Page header ─────────────────────────────────────────────────── */
+.page-header { text-align: center; margin-bottom: 16px; }
+.page-header h1 { font-size: 20px; font-weight: 700; color: #0F172A; }
+.page-header p  { font-size: 11px; color: #64748B; margin-top: 3px; }
+
+/* ── Level nav pills ─────────────────────────────────────────────── */
+.level-nav {
+  display: flex; gap: 6px; margin-bottom: 14px; align-items: center;
+}
+.level-nav span { font-size: 11px; color: #64748B; margin-right: 4px; }
+.level-pill {
+  padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid #CBD5E1; background: #FFFFFF; color: #64748B;
+  transition: all 0.15s;
+}
+.level-pill.active { background: #0070F2; border-color: #0070F2; color: #FFFFFF; }
+.level-pill:hover:not(.active) { border-color: #0070F2; color: #0070F2; }
+
+/* ── Level panes ─────────────────────────────────────────────────── */
+.level-pane { display: none; }
+.level-pane.visible { display: block; }
+
+/* ── Platform band ───────────────────────────────────────────────── */
+.platform-band {
+  border-radius: 8px; border: 2px solid;
+  margin-bottom: 8px; overflow: hidden;
+}
+.platform-band > .band-header {
+  padding: 6px 14px; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.platform-band > .band-body { padding: 10px 12px; }
+
+.band-human  { border-color: #0D9488; }
+.band-human  > .band-header { background: #0D9488; color: #FFFFFF; }
+.band-human  > .band-body   { background: #F0FDFA; }
+
+.band-ai     { border-color: #0070F2; }
+.band-ai     > .band-header { background: #0070F2; color: #FFFFFF; }
+.band-ai     > .band-body   { background: #F0F7FF; }
+
+.band-engine { border-color: #7C3AED; }
+.band-engine > .band-header { background: #7C3AED; color: #FFFFFF; }
+.band-engine > .band-body   { background: #F5F3FF; }
+
+.band-data   { border-color: #83b9f8; }
+.band-data   > .band-header { background: #83b9f8; color: #0F172A; }
+.band-data   > .band-body   { background: #F8FBFF; }
+
+.band-output { border-color: #059669; }
+.band-output > .band-header { background: #059669; color: #FFFFFF; }
+.band-output > .band-body   { background: #F0FDF4; }
+
+/* ── App-box / agent shapes ──────────────────────────────────────── */
+.app-box {
+  border-radius: 8px; border: 2px solid;
+  padding: 7px 14px; font-size: 12px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px; white-space: nowrap;
+}
+.app-box.blue   { border-color: #0070F2; background: #DBEAFE; color: #1E40AF; }
+.app-box.teal   { border-color: #0D9488; background: #CCFBF1; color: #115E59; }
+.app-box.green  { border-color: #059669; background: #D1FAE5; color: #065F46; }
+.app-box.amber  { border-color: #D97706; background: #FEF3C7; color: #92400E; }
+.app-box.purple { border-color: #7C3AED; background: #EDE9FE; color: #5B21B6; }
+.app-box.slate  { border-color: #64748B; background: #E2E8F0; color: #334155; }
+
+/* ── L0 box (agent / storage rectangle) ─────────────────────────── */
+.l0-box {
+  border-radius: 8px; border: 2px solid;
+  padding: 10px 14px; text-align: center;
+  font-size: 12px; font-weight: 600; line-height: 1.35;
+  background: #FFFFFF;
+}
+.l0-box.blue   { border-color: #1b90ff; color: #1E40AF; }
+.l0-box.teal   { border-color: #0D9488; color: #115E59; }
+.l0-box.green  { border-color: #059669; color: #065F46; }
+.l0-box.amber  { border-color: #D97706; color: #92400E; }
+.l0-box.purple { border-color: #7C3AED; color: #4C1D95; }
+.l0-box.slate  { border-color: #64748B; color: #334155; }
+.l0-box.red    { border-color: #DC2626; color: #7F1D1D; }
+
+/* TAM-style agent box: cut-corner (notched) shape via clip-path */
+.agent-box {
+  border: 2px solid;
+  padding: 10px 14px; text-align: center;
+  font-size: 12px; font-weight: 700; line-height: 1.35;
+  background: #FFFFFF;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  position: relative;
+}
+.agent-box.blue   { border-color: #1b90ff; color: #1E40AF; background: #EFF6FF; }
+.agent-box.teal   { border-color: #0D9488; color: #115E59; background: #F0FDFA; }
+.agent-box.green  { border-color: #059669; color: #065F46; background: #F0FDF4; }
+.agent-box.purple { border-color: #7C3AED; color: #4C1D95; background: #F5F3FF; }
+.agent-box.amber  { border-color: #D97706; color: #92400E; background: #FFFBEB; }
+.agent-box.slate  { border-color: #64748B; color: #334155; background: #F8FAFC; }
+
+/* Storage box: rounded rectangle (standard FMC/TAM storage) */
+.storage-box {
+  border-radius: 20px; border: 2px solid;
+  padding: 8px 16px; text-align: center;
+  font-size: 11px; font-weight: 600; line-height: 1.35;
+  background: #FFFFFF;
+}
+.storage-box.blue   { border-color: #1b90ff; color: #1E40AF; background: #F0F7FF; }
+.storage-box.slate  { border-color: #94A3B8; color: #334155; background: #F8FAFC; }
+.storage-box.green  { border-color: #059669; color: #065F46; background: #F0FDF4; }
+.storage-box.amber  { border-color: #D97706; color: #92400E; background: #FFFBEB; }
+.storage-box.purple { border-color: #7C3AED; color: #4C1D95; background: #F5F3FF; }
+.storage-box.teal   { border-color: #0D9488; color: #115E59; background: #F0FDFA; }
+
+/* ── Flex / grid helpers ─────────────────────────────────────────── */
+.flex-row   { display: flex; gap: 8px; align-items: stretch; }
+.flex-center { align-items: center; }
+.flex-1     { flex: 1; }
+.flex-wrap  { flex-wrap: wrap; }
+
+/* ── Connector / arrow ───────────────────────────────────────────── */
+.arrow-row {
+  display: flex; justify-content: center; gap: 80px; margin: -2px 0;
+  position: relative; z-index: 2;
+}
+.arrow-down {
+  width: 2px; height: 16px; background: #94A3B8;
+  display: flex; flex-direction: column; align-items: center; position: relative;
+}
+.arrow-down::after {
+  content: ''; position: absolute; bottom: -5px;
+  border-left: 5px solid transparent; border-right: 5px solid transparent;
+  border-top: 6px solid #94A3B8; left: -4px;
+}
+
+/* ── Data flow label strip ───────────────────────────────────────── */
+.flow-strip {
+  background: #F1F5F9; border: 1.5px dashed #CBD5E1; border-radius: 6px;
+  padding: 6px 12px; margin-bottom: 8px; font-size: 10px; color: #475569;
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.flow-strip .flow-label { font-weight: 700; color: #334155; margin-right: 4px; }
+.flow-tag {
+  display: inline-block; border-radius: 3px; padding: 1px 7px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.3px;
+  text-transform: uppercase; vertical-align: middle;
+}
+.flow-tag.read  { background: #DBEAFE; color: #1D4ED8; border: 1px solid #1D4ED8; }
+.flow-tag.write { background: #D1FAE5; color: #065F46; border: 1px solid #059669; }
+.flow-tag.rw    { background: #EDE9FE; color: #5B21B6; border: 1px solid #7C3AED; }
+.flow-tag.out   { background: #FEF3C7; color: #92400E; border: 1px solid #D97706; }
+
+/* ── Legend ───────────────────────────────────────────────────────── */
+.legend {
+  border: 1px solid #E2E8F0; border-radius: 6px; background: #FFFFFF;
+  padding: 8px 12px; margin-top: 8px;
+}
+.legend-title { font-size: 10px; font-weight: 700; color: #64748B; text-transform: uppercase; margin-bottom: 6px; }
+.legend-row { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #374151; }
+.leg-agent  { width: 22px; height: 14px; background: #EFF6FF; border: 2px solid #1b90ff;
+              clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 0 100%); }
+.leg-storage{ width: 22px; height: 14px; background: #F8FAFC; border: 2px solid #94A3B8; border-radius: 7px; }
+.leg-flow   { width: 28px; height: 0; border-top: 2px dashed #CBD5E1; }
+.leg-arrow  { width: 28px; height: 0; border-top: 2px solid #64748B; }
+
+/* ═════════════════════════════════════════════════════════════════
+   LEVEL 1 — Analysis Pipeline (swimlane)
+═════════════════════════════════════════════════════════════════ */
+.pipeline-wrap { overflow-x: auto; }
+
+.swim-table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  min-width: 860px;
+}
+.swim-table th {
+  background: #1E293B; color: #FFFFFF;
+  font-size: 11px; font-weight: 700; padding: 6px 10px;
+  border: 1px solid #334155; white-space: nowrap; text-align: center;
+  position: sticky; top: 0; z-index: 5;
+}
+.swim-table th.actor-sundar   { background: #0D9488; }
+.swim-table th.actor-claude   { background: #0070F2; }
+.swim-table th.actor-angiopy  { background: #7C3AED; }
+.swim-table th.actor-openai   { background: #059669; }
+.swim-table th.actor-gemini   { background: #D97706; }
+.swim-table th.actor-output   { background: #334155; }
+
+.swim-table td {
+  border: 1px solid #E2E8F0; padding: 5px; vertical-align: top;
+  font-size: 10px; min-width: 100px;
+}
+.swim-table td.phase-label {
+  background: #F1F5F9; font-size: 11px; font-weight: 700; color: #334155;
+  writing-mode: horizontal-tb; text-align: center; min-width: 60px;
+  border-right: 3px solid #CBD5E1;
+}
+
+/* Phase row color coding */
+.phase-setup    td { background: #F0FDFA; }
+.phase-dicom    td { background: #F0F7FF; }
+.phase-qca      td { background: #F5F3FF; }
+.phase-spider   td { background: #FFFBEB; }
+.phase-report   td { background: #F0FDF4; }
+
+.phase-setup    td.phase-label  { background: #0D9488; color: #FFFFFF; }
+.phase-dicom    td.phase-label  { background: #1b90ff; color: #FFFFFF; }
+.phase-qca      td.phase-label  { background: #7C3AED; color: #FFFFFF; }
+.phase-spider   td.phase-label  { background: #D97706; color: #FFFFFF; }
+.phase-report   td.phase-label  { background: #059669; color: #FFFFFF; }
+
+/* Task cell */
+.task-cell {
+  border: 1.5px solid; border-radius: 5px; padding: 5px 7px;
+  font-size: 10px; font-weight: 600; line-height: 1.4; margin: 2px;
+  background: #FFFFFF;
+}
+.task-cell.blue   { border-color: #1b90ff; color: #1E40AF; }
+.task-cell.teal   { border-color: #0D9488; color: #115E59; }
+.task-cell.green  { border-color: #059669; color: #065F46; }
+.task-cell.amber  { border-color: #D97706; color: #92400E; }
+.task-cell.purple { border-color: #7C3AED; color: #4C1D95; }
+.task-cell.slate  { border-color: #64748B; color: #334155; }
+.task-cell.red    { border-color: #DC2626; color: #7F1D1D; }
+
+.task-cell .task-num {
+  font-size: 8px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.3px; opacity: 0.7;
+}
+.task-cell .task-status {
+  font-size: 8px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.3px; margin-top: 2px;
+  display: inline-block; border-radius: 2px; padding: 1px 4px;
+}
+.task-cell .task-status.done    { background: #D1FAE5; color: #065F46; }
+.task-cell .task-status.closed  { background: #FEE2E2; color: #7F1D1D; }
+.task-cell .task-status.partial { background: #FEF3C7; color: #92400E; }
+
+/* small sub-text */
+.sub-text { font-size: 9px; color: #6B7280; font-style: italic; margin-top: 1px; }
+
+/* ── Misc helpers ─────────────────────────────────────────────────── */
+.mt4 { margin-top: 4px; }
+.mt6 { margin-top: 6px; }
+.mt8 { margin-top: 8px; }
+.mb8 { margin-bottom: 8px; }
+.small-text { font-size: 9px; color: #6B7280; font-style: italic; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>AngioPy Self-QCA: System Architecture</h1>
+  <p>Sundar Krishnamurthy · NSTEMI 19 Oct 2026 · LCX Stenosis Analysis · Manipal Hospital Salem</p>
+</div>
+
+<!-- ── Level nav ─────────────────────────────────────────────────── -->
+<div class="level-nav">
+  <span>View:</span>
+  <div class="level-pill active" onclick="showLevel(0,this)">System Architecture</div>
+  <div class="level-pill" onclick="showLevel(1,this)">Analysis Pipeline</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     LEVEL 0 — System Architecture
+     TAM-inspired: agents (cut-corner), storages (rounded), data flows
+══════════════════════════════════════════════════════════════════ -->
+<div id="level-0" class="level-pane visible">
+
+  <!-- Human Actor band -->
+  <div class="platform-band band-human">
+    <div class="band-header">Human Actor — Directing, Reviewing, Deciding</div>
+    <div class="band-body">
+      <div class="flex-row flex-center flex-wrap" style="gap:12px;">
+        <div class="agent-box teal" style="min-width:160px;">
+          <div style="font-size:13px;">Sundar Krishnamurthy</div>
+          <div style="font-size:9px;font-weight:400;color:#0D9488;margin-top:3px;">Patient &amp; Primary Analyst</div>
+          <div class="sub-text">47M · NSTEMI 19 Oct 2026</div>
+        </div>
+        <div style="font-size:11px;color:#0D9488;font-weight:600;">
+          directs all AI agents<br>reviews all outputs<br>makes all clinical decisions
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Agents band -->
+  <div class="platform-band band-ai">
+    <div class="band-header">AI Agents — Executing, Analysing, Verifying</div>
+    <div class="band-body">
+      <div class="flex-row flex-wrap" style="gap:12px;align-items:flex-start;">
+
+        <!-- Claude Code -->
+        <div style="flex:1;min-width:170px;">
+          <div class="agent-box blue">
+            <div style="font-size:12px;font-weight:700;">Claude Code</div>
+            <div style="font-size:9px;font-weight:400;color:#1b90ff;margin-top:3px;">Anthropic · Primary Executor</div>
+          </div>
+          <div class="sub-text mt4" style="font-size:9px;color:#475569;padding:0 4px;">
+            Script dev, PDF parsing, QCA computation, report generation, architecture docs
+          </div>
+        </div>
+
+        <!-- OpenAI Dot -->
+        <div style="flex:1;min-width:170px;">
+          <div class="agent-box green">
+            <div style="font-size:12px;font-weight:700;">OpenAI Dot</div>
+            <div style="font-size:9px;font-weight:400;color:#059669;margin-top:3px;">OpenAI · Visual QC Reviewer</div>
+          </div>
+          <div class="sub-text mt4" style="font-size:9px;color:#475569;padding:0 4px;">
+            Overlay image review, mask quality checks, vessel identification, anatomical orientation
+          </div>
+        </div>
+
+        <!-- Gemini 2.5 Pro -->
+        <div style="flex:1;min-width:170px;">
+          <div class="agent-box amber">
+            <div style="font-size:12px;font-weight:700;">Gemini 2.5 Pro</div>
+            <div style="font-size:9px;font-weight:400;color:#D97706;margin-top:3px;">Google · DICOM Discovery</div>
+          </div>
+          <div class="sub-text mt4" style="font-size:9px;color:#475569;padding:0 4px;">
+            DICOM metadata parsing, gantry angle identification, RCA cine discovery
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Analysis Engine band -->
+  <div class="platform-band band-engine">
+    <div class="band-header">Analysis Engine — Segmentation &amp; QCA Computation</div>
+    <div class="band-body">
+      <div class="flex-row flex-wrap" style="gap:12px;align-items:flex-start;">
+
+        <div style="flex:1;min-width:200px;">
+          <div class="agent-box purple">
+            <div style="font-size:12px;font-weight:700;">AngioPy Engine</div>
+            <div style="font-size:9px;font-weight:400;color:#7C3AED;margin-top:3px;">EPFL · Mahendiran et al. 2024</div>
+          </div>
+          <div class="sub-text mt4" style="font-size:9px;color:#475569;padding:0 4px;">
+            PyTorch vessel segmentation · Diameter profile extraction · Automated QCA · Streamlit UI
+          </div>
+        </div>
+
+        <div style="flex:2;min-width:300px;">
+          <div class="flex-row flex-wrap" style="gap:8px;">
+            <div class="storage-box purple" style="flex:1;min-width:120px;">
+              <div style="font-weight:700;">DICOM Cines</div>
+              <div class="sub-text">4 projections · 5 cines</div>
+              <div class="sub-text">LAO/RAO · CAU/CRA</div>
+            </div>
+            <div class="storage-box purple" style="flex:1;min-width:120px;">
+              <div style="font-weight:700;">Seed Coordinates</div>
+              <div class="sub-text">Manual: Streamlit UI</div>
+              <div class="sub-text">Auto: scripted runs</div>
+            </div>
+            <div class="storage-box purple" style="flex:1;min-width:100px;">
+              <div style="font-weight:700;">Python Scripts</div>
+              <div class="sub-text">angioPySegmentation.py</div>
+              <div class="sub-text">run_*.py wrappers</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Stores band -->
+  <div class="platform-band band-data">
+    <div class="band-header">Data Stores — Inputs, Intermediates, Outputs</div>
+    <div class="band-body">
+
+      <!-- Input data -->
+      <div style="font-size:10px;font-weight:700;color:#334155;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.3px;">Input Data</div>
+      <div class="flex-row flex-wrap mb8" style="gap:8px;">
+        <div class="storage-box blue" style="flex:1;min-width:130px;">
+          <div style="font-weight:700;">Hospital Records</div>
+          <div class="sub-text">Echo, Angio report</div>
+          <div class="sub-text">Discharge summary</div>
+        </div>
+        <div class="storage-box blue" style="flex:1;min-width:130px;">
+          <div style="font-weight:700;">DICOM Archive</div>
+          <div class="sub-text">Manipal Hospital Salem</div>
+          <div class="sub-text">5 cines, 31–48 frames each</div>
+        </div>
+        <div class="storage-box blue" style="flex:1;min-width:130px;">
+          <div style="font-weight:700;">External Review Prompts</div>
+          <div class="sub-text">OpenAI review requests</div>
+          <div class="sub-text">Gemini DICOM queries</div>
+        </div>
+      </div>
+
+      <!-- Intermediate data -->
+      <div style="font-size:10px;font-weight:700;color:#334155;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.3px;">Intermediates</div>
+      <div class="flex-row flex-wrap mb8" style="gap:8px;">
+        <div class="storage-box slate" style="flex:1;min-width:110px;">
+          <div style="font-weight:700;">Overlay Images</div>
+          <div class="sub-text">seg_*_overlay.png</div>
+          <div class="sub-text">per projection/frame</div>
+        </div>
+        <div class="storage-box slate" style="flex:1;min-width:110px;">
+          <div style="font-weight:700;">Mask TIFs</div>
+          <div class="sub-text">Binary vessel masks</div>
+          <div class="sub-text">per projection/frame</div>
+        </div>
+        <div class="storage-box slate" style="flex:1;min-width:110px;">
+          <div style="font-weight:700;">CSV Profiles</div>
+          <div class="sub-text">Diameter vs. position</div>
+          <div class="sub-text">pixel units</div>
+        </div>
+        <div class="storage-box slate" style="flex:1;min-width:110px;">
+          <div style="font-weight:700;">Session Notes</div>
+          <div class="sub-text">SESSION_NOTES.md</div>
+          <div class="sub-text">Phase 1–8 record</div>
+        </div>
+      </div>
+
+      <!-- Output data -->
+      <div style="font-size:10px;font-weight:700;color:#334155;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.3px;">Outputs</div>
+      <div class="flex-row flex-wrap" style="gap:8px;">
+        <div class="storage-box green" style="flex:1;min-width:130px;">
+          <div style="font-weight:700;">QCA Results Table</div>
+          <div class="sub-text">pixel_mm=0.1694</div>
+          <div class="sub-text">4 projections · best-frame</div>
+        </div>
+        <div class="storage-box green" style="flex:1;min-width:130px;">
+          <div style="font-weight:700;">Clinical Report</div>
+          <div class="sub-text">CLINICAL_REPORT_20261116.md</div>
+          <div class="sub-text">765 lines · full QCA narrative</div>
+        </div>
+        <div class="storage-box green" style="flex:1;min-width:130px;">
+          <div style="font-weight:700;">Final PDF</div>
+          <div class="sub-text">AngioPy_Full_Report_v2.pdf</div>
+          <div class="sub-text">30 pages · for cardiologist</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Key data flows callout -->
+  <div class="flow-strip">
+    <span class="flow-label">Key data flows:</span>
+    <span><span class="flow-tag read">R</span> Sundar reads all outputs for review</span>
+    <span><span class="flow-tag write">W</span> Claude Code writes scripts, report, session notes</span>
+    <span><span class="flow-tag rw">R/W</span> AngioPy reads DICOM + seeds, writes masks + CSVs</span>
+    <span><span class="flow-tag out">OUT</span> OpenAI / Gemini receive image/DICOM queries, return findings as text</span>
+  </div>
+
+  <!-- Notes on excluded view -->
+  <div style="background:#FFFBEB;border:1.5px solid #D97706;border-left:4px solid #D97706;border-radius:4px;padding:8px 12px;font-size:10px;color:#78350F;line-height:1.5;margin-bottom:8px;">
+    <strong style="display:block;margin-bottom:3px;color:#92400E;">Spider View (LAO 45 CAU 29) — Excluded from Cross-Projection Analysis</strong>
+    Seed placement attempts (4 runs) could not isolate mid-segment LCX cleanly in the LM bifurcation complex.
+    Best mask preserved at repo/results/. Cardiologist review of the Spider cine required before any measurement can be validated.
+    Final QCA table uses 4 projections (RAO CRA, RAO CAU, LAO CRA, LAO CAU).
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-title">Notation (TAM-inspired)</div>
+    <div class="legend-row">
+      <div class="legend-item"><div class="leg-agent"></div> Active agent (cut-corner box)</div>
+      <div class="legend-item"><div class="leg-storage"></div> Data store (rounded box)</div>
+      <div class="legend-item"><span class="flow-tag read">R</span> Read access</div>
+      <div class="legend-item"><span class="flow-tag write">W</span> Write access</div>
+      <div class="legend-item"><span class="flow-tag rw">R/W</span> Modify (read+write)</div>
+      <div class="legend-item"><span class="flow-tag out">OUT</span> Output / publish</div>
+    </div>
+  </div>
+
+</div><!-- /level-0 -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     LEVEL 1 — Analysis Pipeline (8 tasks, 5 phases, swimlane)
+══════════════════════════════════════════════════════════════════ -->
+<div id="level-1" class="level-pane">
+
+  <div style="font-size:11px;color:#64748B;margin-bottom:10px;line-height:1.5;">
+    All 8 QCA tasks run Oct–Nov 2026. Columns = actors. Rows = phases. Each cell shows what that actor did in that phase.
+    Spider re-seeding (Phase 4) was closed 17 Nov 2026 — excluded from the final cross-projection analysis.
+  </div>
+
+  <div class="pipeline-wrap">
+  <table class="swim-table">
+    <thead>
+      <tr>
+        <th style="width:70px;">Phase</th>
+        <th class="actor-sundar">Sundar<br><span style="font-size:9px;font-weight:400;">Patient / Director</span></th>
+        <th class="actor-claude">Claude Code<br><span style="font-size:9px;font-weight:400;">Anthropic</span></th>
+        <th class="actor-angiopy">AngioPy Engine<br><span style="font-size:9px;font-weight:400;">EPFL PyTorch</span></th>
+        <th class="actor-openai">OpenAI Dot<br><span style="font-size:9px;font-weight:400;">Visual QC</span></th>
+        <th class="actor-gemini">Gemini 2.5 Pro<br><span style="font-size:9px;font-weight:400;">DICOM Discovery</span></th>
+        <th class="actor-output">Outputs</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- Phase 1: Setup -->
+      <tr class="phase-setup">
+        <td class="phase-label">Setup &amp;<br>Prep</td>
+        <td>
+          <div class="task-cell teal">
+            <div class="task-num">Oct 2026</div>
+            Provided hospital records, DICOM archive, clinical context (NSTEMI, LCX stent)
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td>
+          <div class="task-cell blue">
+            <div class="task-num">Task 0</div>
+            Installed AngioPy, pdfplumber, pdfminer; set up virtualenv; verified Streamlit UI
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td>
+          <div class="task-cell purple">
+            Streamlit UI launched<br>
+            <span class="sub-text">localhost:8501</span>
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td style="background:#F9FAFB;color:#9CA3AF;font-style:italic;font-size:9px;text-align:center;">—</td>
+        <td style="background:#F9FAFB;color:#9CA3AF;font-style:italic;font-size:9px;text-align:center;">—</td>
+        <td>
+          <div class="storage-box green" style="font-size:9px;margin:2px;">
+            Python env + AngioPy running
+          </div>
+        </td>
+      </tr>
+
+      <!-- Phase 2: DICOM Inventory -->
+      <tr class="phase-dicom">
+        <td class="phase-label">DICOM<br>Inventory</td>
+        <td>
+          <div class="task-cell teal">
+            Directed gantry angle identification task; confirmed 4 LCX projections + 1 RCA
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td>
+          <div class="task-cell blue">
+            <div class="task-num">Task 1</div>
+            DICOM metadata parse; built cine inventory table (5 cines, frame counts, pixel spacing)
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td style="background:#F9FAFB;color:#9CA3AF;font-style:italic;font-size:9px;text-align:center;">—</td>
+        <td style="background:#F9FAFB;color:#9CA3AF;font-style:italic;font-size:9px;text-align:center;">—</td>
+        <td>
+          <div class="task-cell amber">
+            DICOM metadata read; identified gantry angles (LAO/RAO/CAU/CRA); discovered RCA cine
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td>
+          <div class="storage-box blue" style="font-size:9px;margin:2px;">
+            Cine inventory table<br>pixel_mm = 0.1694 mm/px
+          </div>
+        </td>
+      </tr>
+
+      <!-- Phase 3: QCA Tasks 1–8 -->
+      <tr class="phase-qca">
+        <td class="phase-label">QCA<br>Tasks<br>1–8</td>
+        <td>
+          <div class="task-cell teal">
+            Directed frame selection per cine; reviewed overlays; approved final seeds; accepted/rejected mask results
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td>
+          <div class="task-cell blue">
+            <div class="task-num">Tasks 2–8</div>
+            Scripted QCA runs for 4 projections (RAO CRA, RAO CAU, LAO CRA, LAO CAU);
+            calibrated pixel-to-mm; computed MLD, RD, %DS per projection
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td>
+          <div class="task-cell purple">
+            Segmented vessel per projection; produced overlay PNGs + mask TIFs + CSV diameter profiles
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td>
+          <div class="task-cell green">
+            Reviewed overlay images for each projection; confirmed mask quality; flagged anatomical issues
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td style="background:#F9FAFB;color:#9CA3AF;font-style:italic;font-size:9px;text-align:center;">—</td>
+        <td>
+          <div class="storage-box purple" style="font-size:9px;margin:2px;">
+            4-projection QCA table<br>MLD 0.59–0.67 mm<br>%DS 71–80%
+          </div>
+          <div class="storage-box green" style="font-size:9px;margin:2px;margin-top:4px;">
+            Overlay PNGs + CSVs<br>(review_20261105/)
+          </div>
+        </td>
+      </tr>
+
+      <!-- Phase 4: Spider Re-seeding -->
+      <tr class="phase-spider">
+        <td class="phase-label">Spider<br>Re-seed<br>(closed)</td>
+        <td>
+          <div class="task-cell amber">
+            Manually placed seeds in Streamlit UI (2 sessions); reviewed mask locations; decided to close after 4 failed attempts
+            <div class="task-status closed">closed</div>
+          </div>
+        </td>
+        <td>
+          <div class="task-cell amber">
+            Attempted trial seed runs (scripted 7-seed, 4-seed reviewer coords); documented anatomy; wrote handover notes
+            <div class="task-status closed">closed</div>
+          </div>
+        </td>
+        <td>
+          <div class="task-cell amber">
+            4 segmentation runs; all produced masks in wrong zone (LM bifurcation complex, not mid-LCX)
+            <div class="task-status closed">closed</div>
+          </div>
+        </td>
+        <td>
+          <div class="task-cell amber">
+            Reviewed Spider overlay; confirmed mask not on LCX mid-segment; recommended exclusion
+            <div class="task-status closed">closed</div>
+          </div>
+        </td>
+        <td style="background:#F9FAFB;color:#9CA3AF;font-style:italic;font-size:9px;text-align:center;">—</td>
+        <td>
+          <div class="storage-box amber" style="font-size:9px;margin:2px;border-color:#D97706;color:#92400E;">
+            SPIDER_RESEEDING_HANDOVER.md<br>Best mask preserved<br>Excluded from QCA table
+          </div>
+        </td>
+      </tr>
+
+      <!-- Phase 5: Report Generation -->
+      <tr class="phase-report">
+        <td class="phase-label">Report<br>Generation</td>
+        <td>
+          <div class="task-cell teal">
+            Reviewed draft report; provided clinical context; approved final narrative; verified QCA table accuracy
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td>
+          <div class="task-cell blue">
+            Generated CLINICAL_REPORT_20261116.md (765 lines); wrote generate_report_v2_sundar.py;
+            compiled 30-page PDF with QCA data + images
+            <div class="task-status done">done</div>
+          </div>
+        </td>
+        <td style="background:#F9FAFB;color:#9CA3AF;font-style:italic;font-size:9px;text-align:center;">—</td>
+        <td style="background:#F9FAFB;color:#9CA3AF;font-style:italic;font-size:9px;text-align:center;">—</td>
+        <td style="background:#F9FAFB;color:#9CA3AF;font-style:italic;font-size:9px;text-align:center;">—</td>
+        <td>
+          <div class="storage-box green" style="font-size:9px;margin:2px;">
+            CLINICAL_REPORT_20261116.md
+          </div>
+          <div class="storage-box green" style="font-size:9px;margin:2px;margin-top:4px;">
+            AngioPy_Full_Report_v2.pdf<br>30 pages
+          </div>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+  </div>
+
+  <!-- QCA results summary bar -->
+  <div style="background:#F0FDF4;border:2px solid #059669;border-radius:8px;padding:10px 14px;margin-top:10px;">
+    <div style="font-size:12px;font-weight:700;color:#065F46;margin-bottom:6px;">Final QCA Results — Cross-Projection Summary (4 views, mid-LCX)</div>
+    <div class="flex-row flex-wrap" style="gap:10px;">
+      <div style="flex:1;min-width:130px;background:#FFFFFF;border:1.5px solid #059669;border-radius:6px;padding:7px 10px;text-align:center;">
+        <div style="font-size:10px;color:#475569;">RAO 25 CRA 25 (best)</div>
+        <div style="font-size:14px;font-weight:700;color:#065F46;">76.3% DS</div>
+        <div style="font-size:9px;color:#6B7280;">MLD 0.59 mm · RD 2.49 mm</div>
+      </div>
+      <div style="flex:1;min-width:130px;background:#FFFFFF;border:1.5px solid #059669;border-radius:6px;padding:7px 10px;text-align:center;">
+        <div style="font-size:10px;color:#475569;">RAO 30 CAU 20</div>
+        <div style="font-size:14px;font-weight:700;color:#065F46;">78.6% DS</div>
+        <div style="font-size:9px;color:#6B7280;">MLD 0.59 mm · RD 2.77 mm</div>
+      </div>
+      <div style="flex:1;min-width:130px;background:#FFFFFF;border:1.5px solid #059669;border-radius:6px;padding:7px 10px;text-align:center;">
+        <div style="font-size:10px;color:#475569;">LAO 45 CRA 25</div>
+        <div style="font-size:14px;font-weight:700;color:#065F46;">71.1% DS</div>
+        <div style="font-size:9px;color:#6B7280;">MLD 0.67 mm · RD 2.33 mm</div>
+      </div>
+      <div style="flex:1;min-width:130px;background:#FFFFFF;border:1.5px solid #059669;border-radius:6px;padding:7px 10px;text-align:center;">
+        <div style="font-size:10px;color:#475569;">LAO 60 CAU 20</div>
+        <div style="font-size:14px;font-weight:700;color:#065F46;">72.8% DS</div>
+        <div style="font-size:9px;color:#6B7280;">MLD 0.67 mm · RD 2.47 mm</div>
+      </div>
+      <div style="flex:1;min-width:130px;background:#DBEAFE;border:2px solid #1b90ff;border-radius:6px;padding:7px 10px;text-align:center;">
+        <div style="font-size:10px;color:#1E40AF;font-weight:600;">Cross-Projection Mean</div>
+        <div style="font-size:14px;font-weight:700;color:#1E40AF;">74.7% DS</div>
+        <div style="font-size:9px;color:#3B82F6;">MLD 0.63 mm · RD 2.52 mm</div>
+      </div>
+    </div>
+    <div style="font-size:9px;color:#6B7280;margin-top:6px;font-style:italic;">
+      pixel_mm = 0.1694 mm/px (from DICOM pixel spacing). Stent placed: Xience Sky 3.0x28mm.
+      Spider view (LAO 45 CAU 29) excluded — mask could not be validated on mid-segment LCX.
+    </div>
+  </div>
+
+  <!-- Multi-AI attribution note -->
+  <div style="background:#F0F7FF;border:1.5px solid #1b90ff;border-radius:6px;padding:8px 12px;margin-top:8px;font-size:10px;color:#1E40AF;line-height:1.5;">
+    <strong>Multi-AI Attribution:</strong> All three AI agents (Claude Code, OpenAI Dot, Gemini 2.5 Pro) contributed under Sundar's direction.
+    No AI agent had autonomous access to clinical systems. All clinical decisions were made by Sundar in consultation with his treating cardiologist.
+    This analysis is for personal record and second-opinion context only — not a substitute for clinical QCA.
+  </div>
+
+</div><!-- /level-1 -->
+
+<script>
+function showLevel(n, el) {
+  // Deactivate all pills and panes
+  document.querySelectorAll('.level-pill').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.level-pane').forEach(p => p.classList.remove('visible'));
+  // Activate selected
+  el.classList.add('active');
+  document.getElementById('level-' + n).classList.add('visible');
+}
+</script>
+
+</body>
+</html>

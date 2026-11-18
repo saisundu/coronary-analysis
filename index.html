@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sundar's Coronary Analysis — Overview</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="brand">Sundar · <span>Coronary Analysis</span></div>
+  <a href="index.html"  class="nav-link active">Overview</a>
+  <a href="analysis.html" class="nav-link">Architecture &amp; Pipeline</a>
+  <a href="images.html"   class="nav-link">Segmentation Gallery</a>
+  <a href="dicom.html"    class="nav-link">DICOM Viewer</a>
+  <a href="report.html"   class="nav-link">Full Report</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <h1>Patient-Performed Coronary Artery Analysis</h1>
+    <p>Sundaresan Krishnamurthy · 47M · NSTEMI 19 October 2026 · Manipal Hospital Salem, Tamil Nadu</p>
+  </div>
+
+  <div class="alert info">
+    <strong>For the reviewing cardiologist</strong>
+    This is a self-initiated computational analysis using AngioPy (EPFL, Mahendiran et al. 2024) on DICOM
+    files from the patient's own hospital CD. All measurements are investigational and unvalidated.
+    The patient has no medical training. This is not a substitute for formal clinical QCA.
+    The full report with all caveats is available on the <a href="report.html">Report</a> page.
+  </div>
+
+  <!-- Key stats -->
+  <div class="stat-grid">
+    <div class="stat-card blue">
+      <div class="stat-label">Event</div>
+      <div class="stat-value" style="font-size:15px;margin:6px 0;">NSTEMI</div>
+      <div class="stat-sub">19 Oct 2026 · Manipal Hospital Salem</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-label">Vessel treated</div>
+      <div class="stat-value" style="font-size:15px;margin:6px 0;">LCX</div>
+      <div class="stat-sub">Xience Sky 3.0×28mm stent</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-label">Operator stenosis</div>
+      <div class="stat-value">~90%</div>
+      <div class="stat-sub">Visual estimate · mid-segment LCX</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Computational DS (mean)</div>
+      <div class="stat-value">74.7%</div>
+      <div class="stat-sub">4 projections · AngioPy QCA</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-label">LVEF</div>
+      <div class="stat-value">60%</div>
+      <div class="stat-sub">Echo ×2 · no RWMA</div>
+    </div>
+    <div class="stat-card slate">
+      <div class="stat-label">Troponin T</div>
+      <div class="stat-value" style="font-size:18px;">64 ng/L</div>
+      <div class="stat-sub">Flagged abnormal · single draw · 7:44am</div>
+    </div>
+  </div>
+
+  <!-- QCA results -->
+  <div class="section">
+    <div class="section-title"><div class="dot" style="background:#059669;"></div>Cross-Projection QCA Results (4 views · mid-LCX)</div>
+    <div class="proj-grid">
+      <div class="proj-card best">
+        <div class="proj-name">RAO 25° CRA 25° <span class="tag done">best view</span></div>
+        <div class="proj-ds">76.3% DS</div>
+        <div class="proj-meta">MLD 0.59 mm · RD 2.49 mm · Frame 22</div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-name">RAO 30° CAU 20°</div>
+        <div class="proj-ds">78.6% DS</div>
+        <div class="proj-meta">MLD 0.59 mm · RD 2.77 mm</div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-name">LAO 45° CRA 25°</div>
+        <div class="proj-ds">71.1% DS</div>
+        <div class="proj-meta">MLD 0.67 mm · RD 2.33 mm</div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-name">LAO 60° CAU 20°</div>
+        <div class="proj-ds">72.8% DS</div>
+        <div class="proj-meta">MLD 0.67 mm · RD 2.47 mm</div>
+      </div>
+      <div class="proj-card mean">
+        <div class="proj-name">Cross-projection mean</div>
+        <div class="proj-ds">74.7% DS</div>
+        <div class="proj-meta">MLD 0.63 mm · RD 2.52 mm · pixel_mm = 0.1694</div>
+      </div>
+    </div>
+    <p class="text-muted mt8">Spider view (LAO 45° CAU 29°) excluded — 4 seed placement attempts could not isolate mid-segment LCX. Cardiologist review required before any Spider measurement can be validated.</p>
+  </div>
+
+  <!-- Other vessels -->
+  <div class="section">
+    <div class="section-title"><div class="dot" style="background:#1b90ff;"></div>Other Vessels</div>
+    <table class="data-table">
+      <thead><tr><th>Vessel</th><th>Clinical (operator)</th><th>Computational</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>LCX pre-stent</strong></td>
+          <td>~90% mid-segment</td>
+          <td>74.7% mean (4 projections)</td>
+          <td><span class="tag done">verified · 4 views</span></td>
+        </tr>
+        <tr>
+          <td><strong>LCX post-stent MLD</strong></td>
+          <td>—</td>
+          <td class="withdrawn">Withdrawn — endpoint artefact in all frames</td>
+          <td><span class="tag closed">withdrawn</span></td>
+        </tr>
+        <tr>
+          <td><strong>Post-stent mean lumen</strong></td>
+          <td>—</td>
+          <td>2.35 mm (11 frames, multi-frame mean)</td>
+          <td><span class="tag unverif">not QCA MLD</span></td>
+        </tr>
+        <tr>
+          <td><strong>LAD</strong></td>
+          <td>~30%</td>
+          <td>30–38% (2 frames, seed identity unresolved)</td>
+          <td><span class="tag unverif">unverified</span></td>
+        </tr>
+        <tr>
+          <td><strong>RCA</strong></td>
+          <td>~30% proximal</td>
+          <td>28–35% (scripted run); proximal RVD 2.97 mm</td>
+          <td><span class="tag unverif">low confidence · single projection</span></td>
+        </tr>
+        <tr>
+          <td><strong>LMCA</strong></td>
+          <td>Normal</td>
+          <td>Normal (visual); QCA discarded — tool underestimates large vessels</td>
+          <td><span class="tag clinical">clinical</span></td>
+        </tr>
+        <tr>
+          <td><strong>OM branch</strong></td>
+          <td>—</td>
+          <td>MLD −35% post-stent (jailing expected)</td>
+          <td><span class="tag unverif">low — bifurcation uncertainty</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Clinical background -->
+  <div class="section">
+    <div class="section-title"><div class="dot" style="background:#0D9488;"></div>Clinical Background</div>
+    <div class="flex-row">
+      <div style="flex:1;min-width:220px;">
+        <table class="data-table">
+          <tr><td><strong>Patient</strong></td><td>Sundaresan Krishnamurthy, 47M</td></tr>
+          <tr><td><strong>Admission</strong></td><td>19 October 2026</td></tr>
+          <tr><td><strong>Hospital</strong></td><td>Manipal Hospital Salem, Tamil Nadu</td></tr>
+          <tr><td><strong>Diagnosis</strong></td><td>NSTEMI (hospital documented — under independent review)</td></tr>
+          <tr><td><strong>Procedure</strong></td><td>PCI to LCX · Xience Sky 3.0×28mm</td></tr>
+          <tr><td><strong>Echo ×2</strong></td><td>LVEF 60% · no RWMA · Grade I diastolic dysfunction</td></tr>
+          <tr><td><strong>Troponin T</strong></td><td>64 ng/L (lab ref &lt;50) · single draw · assay platform not stated</td></tr>
+          <tr><td><strong>Discharge</strong></td><td>21 Oct 2026 · DAPT + beta-blocker + ACE inhibitor + statin</td></tr>
+        </table>
+      </div>
+      <div style="flex:1;min-width:220px;">
+        <div class="alert warning" style="margin-bottom:8px;">
+          <strong>Note on NSTEMI diagnosis</strong>
+          The patient has not yet independently accepted the NSTEMI diagnosis and is bringing this
+          analysis to an independent cardiologist for review. The evidence — single mildly elevated
+          troponin, borderline ECG, normal LVEF, no RWMA — is preserved verbatim throughout this site.
+        </div>
+        <div class="alert warning">
+          <strong>Documented ketorolac allergy</strong>
+          Manipal Hospital discharge summary records allergy to ketorolac. Patient received ketorolac
+          at Aishwaryam Emergency prior to Manipal admission. Facial and eye swelling followed.
+          Timeline requires verification against medication chart.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analysis method -->
+  <div class="section">
+    <div class="section-title"><div class="dot" style="background:#7C3AED;"></div>Analysis Method</div>
+    <table class="data-table">
+      <thead><tr><th>Component</th><th>Role</th><th>What it did</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Sundar</strong></td><td>Patient / Director</td><td>Provided DICOM data, directed all agents, reviewed all outputs, made all decisions</td></tr>
+        <tr><td><strong>Claude Code</strong> (Anthropic)</td><td>Primary executor</td><td>Script development, QCA computation, seed placement (scripted runs), report writing</td></tr>
+        <tr><td><strong>OpenAI Dot</strong></td><td>Visual QC reviewer</td><td>Independent overlay review, mask quality assessment, vessel identification</td></tr>
+        <tr><td><strong>Gemini 2.5 Pro</strong> (Google)</td><td>DICOM discovery</td><td>Identified RCA cines mislabelled as LCA; confirmed gantry angles</td></tr>
+        <tr><td><strong>AngioPy</strong> (EPFL)</td><td>Segmentation engine</td><td>PyTorch vessel segmentation, diameter profile extraction, QCA metrics</td></tr>
+      </tbody>
+    </table>
+    <p class="text-muted mt8">Reference: Mahendiran et al., <em>Int J Cardiol</em> 2024, doi:10.1016/j.ijcard.2024.132598 · Weights: Zenodo 13848135 · Commit: bd42ec3a</p>
+  </div>
+
+  <!-- Navigation cards -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:4px;">
+    <a href="analysis.html" style="text-decoration:none;">
+      <div class="section" style="margin-bottom:0;cursor:pointer;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:4px;">Architecture &amp; Pipeline →</div>
+        <div style="font-size:11px;color:#475569;">System components, data flows, analysis phases, QCA results summary</div>
+      </div>
+    </a>
+    <a href="images.html" style="text-decoration:none;">
+      <div class="section" style="margin-bottom:0;cursor:pointer;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:4px;">Segmentation Gallery →</div>
+        <div style="font-size:11px;color:#475569;">All overlay images, diameter profiles, frame surveys per projection</div>
+      </div>
+    </a>
+    <a href="dicom.html" style="text-decoration:none;">
+      <div class="section" style="margin-bottom:0;cursor:pointer;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:4px;">DICOM Viewer →</div>
+        <div style="font-size:11px;color:#475569;">Browser-based access to all 29 raw cines from the hospital CD</div>
+      </div>
+    </a>
+    <a href="report.html" style="text-decoration:none;">
+      <div class="section" style="margin-bottom:0;cursor:pointer;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:4px;">Full Report →</div>
+        <div style="font-size:11px;color:#475569;">Complete 32-page PDF with clinical narrative, all findings, and audit trail</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+</body>
+</html>
