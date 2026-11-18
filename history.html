@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health History — Sundar's Cardiac Record</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="brand">Sundar · <span>Cardiac Record</span></div>
+  <a href="index.html"    class="nav-link">My Story</a>
+  <a href="history.html"  class="nav-link active">Health History</a>
+  <a href="analysis.html" class="nav-link">QCA Analysis</a>
+  <a href="images.html"   class="nav-link">Image Gallery</a>
+  <a href="dicom.html"    class="nav-link">Raw Cines</a>
+  <a href="report.html"   class="nav-link">Full Report</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <h1>Health History</h1>
+    <p>Pre-event baseline, post-event recovery, fitness data, and consultations — all in context</p>
+  </div>
+
+  <div class="alert warning" style="margin-bottom:16px;">
+    <strong>Documents pending</strong>
+    This page will be populated once the following are consolidated from Google Drive,
+    the "Healthy Sunder" ChatGPT project, and Gemini sessions:
+    pre-event ECGs (Sep, Nov), annual health checkup (Nov), post-event consultation notes,
+    current medication list, and iPhone Health fitness data.
+  </div>
+
+  <!-- Pre-event baseline -->
+  <div class="section">
+    <div class="section-title"><div class="dot" style="background:#0D9488;"></div>Pre-Event Baseline</div>
+
+    <div class="flex-row" style="gap:14px;">
+      <div style="flex:1;min-width:200px;">
+        <div style="font-size:11px;font-weight:700;color:#334155;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.3px;">ECG — September 2026 <span class="tag unverif">pending</span></div>
+        <div class="alert info">ECG image / PDF to be added from Google Drive. Key question: does this show any pre-existing ST changes that might contextualise the 19 Oct findings?</div>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div style="font-size:11px;font-weight:700;color:#334155;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.3px;">Annual Health Checkup — November 2026 (pre-event) <span class="tag unverif">pending</span></div>
+        <div class="alert info">Full checkup results to be added. Lipid profile, blood work, BP, other markers relevant to cardiac risk.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fitness -->
+  <div class="section">
+    <div class="section-title"><div class="dot" style="background:#059669;"></div>Fitness &amp; Activity</div>
+    <div class="alert info">
+      <strong>iPhone Health data to be added</strong>
+      Daily step count and walking distance since discharge (21 Oct 2026 onwards).
+      Data is in Gemini conversation history and the "Healthy Sunder" ChatGPT project.
+      Will be displayed as a chart (steps per day + cumulative distance).
+    </div>
+    <div class="alert info" style="margin-top:8px;">
+      <strong>Pre-event fitness baseline to be added</strong>
+      Historical step count / activity data from before the event for comparison.
+    </div>
+  </div>
+
+  <!-- Post-event consultations -->
+  <div class="section">
+    <div class="section-title"><div class="dot" style="background:#1b90ff;"></div>Post-Event Consultations</div>
+    <table class="data-table">
+      <thead><tr><th>Date</th><th>With</th><th>Key outcomes</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>21 Oct 2026</td>
+          <td>Treating cardiologist (Manipal)</td>
+          <td>Discharge. LVEF 60%, trivial MR. Medications prescribed.</td>
+          <td><span class="tag done">documented</span></td>
+        </tr>
+        <tr>
+          <td>26 Oct 2026</td>
+          <td>Cardiologist (post-discharge)</td>
+          <td class="withdrawn">Notes to be added from Google Drive</td>
+          <td><span class="tag unverif">pending</span></td>
+        </tr>
+        <tr>
+          <td>Upcoming</td>
+          <td>Independent interventional cardiologist</td>
+          <td>Second opinion — this site is the briefing document</td>
+          <td><span class="tag clinical">planned</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Post-event checkup -->
+  <div class="section">
+    <div class="section-title"><div class="dot" style="background:#7C3AED;"></div>Post-Event Health Checkup <span class="tag unverif">pending</span></div>
+    <div class="alert info">
+      Annual health checkup results from November 2026 (post-event) to be added.
+      Comparison with pre-event baseline will be shown side by side when both are available.
+    </div>
+  </div>
+
+  <!-- Medications -->
+  <div class="section">
+    <div class="section-title"><div class="dot" style="background:#D97706;"></div>Medication History</div>
+    <table class="data-table">
+      <thead><tr><th>Drug</th><th>Class</th><th>Started</th><th>Current status</th></tr></thead>
+      <tbody>
+        <tr><td>Xygrel (clopidogrel)</td><td>Antiplatelet</td><td>19 Oct 2026 (discharge)</td><td><span class="tag done">current</span></td></tr>
+        <tr><td>Ecosprin (aspirin)</td><td>Antiplatelet</td><td>19 Oct 2026 (discharge)</td><td><span class="tag done">current</span></td></tr>
+        <tr><td>Carvistar (carvedilol)</td><td>Beta-blocker</td><td>19 Oct 2026 (discharge)</td><td><span class="tag unverif">verify</span></td></tr>
+        <tr><td>Hopace (ramipril)</td><td>ACE inhibitor</td><td>19 Oct 2026 (discharge)</td><td><span class="tag unverif">verify</span></td></tr>
+        <tr><td>Ivabrad (ivabradine)</td><td>Heart rate agent</td><td>19 Oct 2026 (discharge)</td><td><span class="tag unverif">verify indication</span></td></tr>
+        <tr><td>Astin 80mg (atorvastatin)</td><td>Statin</td><td>19 Oct 2026 (discharge)</td><td><span class="tag done">current</span></td></tr>
+      </tbody>
+    </table>
+    <p class="text-muted mt8">Discharge regimen. Any changes made at the 26 Oct consultation to be verified and updated here.</p>
+  </div>
+
+</div>
+</body>
+</html>

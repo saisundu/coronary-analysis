@@ -3,231 +3,342 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sundar's Coronary Analysis — Overview</title>
+<title>Sundar's Cardiac Story — Overview</title>
 <link rel="stylesheet" href="assets/site.css">
+<style>
+/* ── Timeline ── */
+.timeline { position: relative; padding-left: 28px; margin: 8px 0 4px; }
+.timeline::before {
+  content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+  width: 2px; background: #E2E8F0;
+}
+.tl-item { position: relative; margin-bottom: 18px; }
+.tl-item::before {
+  content: ''; position: absolute; left: -24px; top: 4px;
+  width: 12px; height: 12px; border-radius: 50%; border: 2px solid;
+  background: #FFFFFF;
+}
+.tl-item.blue::before   { border-color: #1b90ff; background: #DBEAFE; }
+.tl-item.amber::before  { border-color: #D97706; background: #FEF3C7; }
+.tl-item.red::before    { border-color: #DC2626; background: #FEE2E2; }
+.tl-item.green::before  { border-color: #059669; background: #D1FAE5; }
+.tl-item.purple::before { border-color: #7C3AED; background: #EDE9FE; }
+.tl-item.teal::before   { border-color: #0D9488; background: #CCFBF1; }
+.tl-item.slate::before  { border-color: #64748B; background: #E2E8F0; }
+.tl-date  { font-size: 10px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.3px; }
+.tl-title { font-size: 13px; font-weight: 700; color: #0F172A; margin: 1px 0 2px; }
+.tl-body  { font-size: 11px; color: #475569; line-height: 1.5; }
+
+/* ── Nav tabs for sections ── */
+.section-tabs {
+  display: flex; gap: 0; margin-bottom: 0;
+  border-bottom: 2px solid #E2E8F0;
+}
+.section-tab {
+  padding: 8px 16px; font-size: 12px; font-weight: 600;
+  color: #64748B; cursor: pointer; border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: all 0.15s; white-space: nowrap;
+}
+.section-tab.active { color: #0070F2; border-bottom-color: #0070F2; }
+.section-tab:hover:not(.active) { color: #334155; }
+.tab-pane { display: none; padding-top: 16px; }
+.tab-pane.visible { display: block; }
+</style>
 </head>
 <body>
 
 <nav class="site-nav">
-  <div class="brand">Sundar · <span>Coronary Analysis</span></div>
-  <a href="index.html"  class="nav-link active">Overview</a>
-  <a href="analysis.html" class="nav-link">Architecture &amp; Pipeline</a>
-  <a href="images.html"   class="nav-link">Segmentation Gallery</a>
-  <a href="dicom.html"    class="nav-link">DICOM Viewer</a>
+  <div class="brand">Sundar · <span>Cardiac Record</span></div>
+  <a href="index.html"    class="nav-link active">My Story</a>
+  <a href="history.html"  class="nav-link">Health History</a>
+  <a href="analysis.html" class="nav-link">QCA Analysis</a>
+  <a href="images.html"   class="nav-link">Image Gallery</a>
+  <a href="dicom.html"    class="nav-link">Raw Cines</a>
   <a href="report.html"   class="nav-link">Full Report</a>
 </nav>
 
 <div class="page-wrap">
 
   <div class="page-header">
-    <h1>Patient-Performed Coronary Artery Analysis</h1>
-    <p>Sundaresan Krishnamurthy · 47M · NSTEMI 19 October 2026 · Manipal Hospital Salem, Tamil Nadu</p>
+    <h1>My Cardiac Story</h1>
+    <p>A patient's first-person account of an unexpected cardiac event — with clinical facts, questions, and an independent computational analysis of my own angiogram.</p>
   </div>
 
-  <div class="alert info">
+  <div class="alert info" style="margin-bottom:16px;">
     <strong>For the reviewing cardiologist</strong>
-    This is a self-initiated computational analysis using AngioPy (EPFL, Mahendiran et al. 2024) on DICOM
-    files from the patient's own hospital CD. All measurements are investigational and unvalidated.
-    The patient has no medical training. This is not a substitute for formal clinical QCA.
-    The full report with all caveats is available on the <a href="report.html">Report</a> page.
+    This site presents my personal account and the documented clinical facts separately from the
+    computational analysis. The analysis (AngioPy QCA) is on the
+    <a href="analysis.html">QCA Analysis</a> page and should be read as an independent
+    investigational finding, not a clinical measurement. I am bringing this to you because I
+    have questions about my diagnosis and treatment that I could not fully resolve from the
+    hospital records alone.
   </div>
 
-  <!-- Key stats -->
-  <div class="stat-grid">
-    <div class="stat-card blue">
-      <div class="stat-label">Event</div>
-      <div class="stat-value" style="font-size:15px;margin:6px 0;">NSTEMI</div>
-      <div class="stat-sub">19 Oct 2026 · Manipal Hospital Salem</div>
+  <!-- Section tabs -->
+  <div class="section" style="padding-bottom:0;">
+    <div class="section-tabs">
+      <div class="section-tab active" onclick="showTab('narrative',this)">My Narrative</div>
+      <div class="section-tab" onclick="showTab('timeline',this)">Timeline</div>
+      <div class="section-tab" onclick="showTab('facts',this)">Documented Facts</div>
+      <div class="section-tab" onclick="showTab('questions',this)">My Questions</div>
+      <div class="section-tab" onclick="showTab('now',this)">Where I Am Now</div>
     </div>
-    <div class="stat-card purple">
-      <div class="stat-label">Vessel treated</div>
-      <div class="stat-value" style="font-size:15px;margin:6px 0;">LCX</div>
-      <div class="stat-sub">Xience Sky 3.0×28mm stent</div>
-    </div>
-    <div class="stat-card amber">
-      <div class="stat-label">Operator stenosis</div>
-      <div class="stat-value">~90%</div>
-      <div class="stat-sub">Visual estimate · mid-segment LCX</div>
-    </div>
-    <div class="stat-card green">
-      <div class="stat-label">Computational DS (mean)</div>
-      <div class="stat-value">74.7%</div>
-      <div class="stat-sub">4 projections · AngioPy QCA</div>
-    </div>
-    <div class="stat-card teal">
-      <div class="stat-label">LVEF</div>
-      <div class="stat-value">60%</div>
-      <div class="stat-sub">Echo ×2 · no RWMA</div>
-    </div>
-    <div class="stat-card slate">
-      <div class="stat-label">Troponin T</div>
-      <div class="stat-value" style="font-size:18px;">64 ng/L</div>
-      <div class="stat-sub">Flagged abnormal · single draw · 7:44am</div>
-    </div>
-  </div>
 
-  <!-- QCA results -->
-  <div class="section">
-    <div class="section-title"><div class="dot" style="background:#059669;"></div>Cross-Projection QCA Results (4 views · mid-LCX)</div>
-    <div class="proj-grid">
-      <div class="proj-card best">
-        <div class="proj-name">RAO 25° CRA 25° <span class="tag done">best view</span></div>
-        <div class="proj-ds">76.3% DS</div>
-        <div class="proj-meta">MLD 0.59 mm · RD 2.49 mm · Frame 22</div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-name">RAO 30° CAU 20°</div>
-        <div class="proj-ds">78.6% DS</div>
-        <div class="proj-meta">MLD 0.59 mm · RD 2.77 mm</div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-name">LAO 45° CRA 25°</div>
-        <div class="proj-ds">71.1% DS</div>
-        <div class="proj-meta">MLD 0.67 mm · RD 2.33 mm</div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-name">LAO 60° CAU 20°</div>
-        <div class="proj-ds">72.8% DS</div>
-        <div class="proj-meta">MLD 0.67 mm · RD 2.47 mm</div>
-      </div>
-      <div class="proj-card mean">
-        <div class="proj-name">Cross-projection mean</div>
-        <div class="proj-ds">74.7% DS</div>
-        <div class="proj-meta">MLD 0.63 mm · RD 2.52 mm · pixel_mm = 0.1694</div>
-      </div>
-    </div>
-    <p class="text-muted mt8">Spider view (LAO 45° CAU 29°) excluded — 4 seed placement attempts could not isolate mid-segment LCX. Cardiologist review required before any Spider measurement can be validated.</p>
-  </div>
+    <!-- ── Tab: Narrative ── -->
+    <div id="tab-narrative" class="tab-pane visible">
 
-  <!-- Other vessels -->
-  <div class="section">
-    <div class="section-title"><div class="dot" style="background:#1b90ff;"></div>Other Vessels</div>
-    <table class="data-table">
-      <thead><tr><th>Vessel</th><th>Clinical (operator)</th><th>Computational</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><strong>LCX pre-stent</strong></td>
-          <td>~90% mid-segment</td>
-          <td>74.7% mean (4 projections)</td>
-          <td><span class="tag done">verified · 4 views</span></td>
-        </tr>
-        <tr>
-          <td><strong>LCX post-stent MLD</strong></td>
-          <td>—</td>
-          <td class="withdrawn">Withdrawn — endpoint artefact in all frames</td>
-          <td><span class="tag closed">withdrawn</span></td>
-        </tr>
-        <tr>
-          <td><strong>Post-stent mean lumen</strong></td>
-          <td>—</td>
-          <td>2.35 mm (11 frames, multi-frame mean)</td>
-          <td><span class="tag unverif">not QCA MLD</span></td>
-        </tr>
-        <tr>
-          <td><strong>LAD</strong></td>
-          <td>~30%</td>
-          <td>30–38% (2 frames, seed identity unresolved)</td>
-          <td><span class="tag unverif">unverified</span></td>
-        </tr>
-        <tr>
-          <td><strong>RCA</strong></td>
-          <td>~30% proximal</td>
-          <td>28–35% (scripted run); proximal RVD 2.97 mm</td>
-          <td><span class="tag unverif">low confidence · single projection</span></td>
-        </tr>
-        <tr>
-          <td><strong>LMCA</strong></td>
-          <td>Normal</td>
-          <td>Normal (visual); QCA discarded — tool underestimates large vessels</td>
-          <td><span class="tag clinical">clinical</span></td>
-        </tr>
-        <tr>
-          <td><strong>OM branch</strong></td>
-          <td>—</td>
-          <td>MLD −35% post-stent (jailing expected)</td>
-          <td><span class="tag unverif">low — bifurcation uncertainty</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+      <p style="font-size:12px;color:#475569;line-height:1.6;margin-bottom:10px;">
+        Throughout this site, <strong>Sundar</strong> refers to me — Sundaresan Krishnamurthy,
+        the patient. I am a software engineer, 47 years old, with no medical training.
+        In October 2026 I had an unexpected cardiac admission and stent procedure. What follows
+        is my account of what happened — written because I believe I deserve to understand
+        what was done to my body, and because I have questions I have not yet had answered to
+        my satisfaction.
+      </p>
 
-  <!-- Clinical background -->
-  <div class="section">
-    <div class="section-title"><div class="dot" style="background:#0D9488;"></div>Clinical Background</div>
-    <div class="flex-row">
-      <div style="flex:1;min-width:220px;">
-        <table class="data-table">
-          <tr><td><strong>Patient</strong></td><td>Sundaresan Krishnamurthy, 47M</td></tr>
-          <tr><td><strong>Admission</strong></td><td>19 October 2026</td></tr>
-          <tr><td><strong>Hospital</strong></td><td>Manipal Hospital Salem, Tamil Nadu</td></tr>
-          <tr><td><strong>Diagnosis</strong></td><td>NSTEMI (hospital documented — under independent review)</td></tr>
-          <tr><td><strong>Procedure</strong></td><td>PCI to LCX · Xience Sky 3.0×28mm</td></tr>
-          <tr><td><strong>Echo ×2</strong></td><td>LVEF 60% · no RWMA · Grade I diastolic dysfunction</td></tr>
-          <tr><td><strong>Troponin T</strong></td><td>64 ng/L (lab ref &lt;50) · single draw · assay platform not stated</td></tr>
-          <tr><td><strong>Discharge</strong></td><td>21 Oct 2026 · DAPT + beta-blocker + ACE inhibitor + statin</td></tr>
-        </table>
-      </div>
-      <div style="flex:1;min-width:220px;">
-        <div class="alert warning" style="margin-bottom:8px;">
-          <strong>Note on NSTEMI diagnosis</strong>
-          The patient has not yet independently accepted the NSTEMI diagnosis and is bringing this
-          analysis to an independent cardiologist for review. The evidence — single mildly elevated
-          troponin, borderline ECG, normal LVEF, no RWMA — is preserved verbatim throughout this site.
+      <h3 style="font-size:13px;font-weight:700;color:#0F172A;margin:14px 0 6px;">18 October 2026 — First symptoms</h3>
+      <p style="font-size:12px;color:#475569;line-height:1.6;margin-bottom:10px;">
+        During a late breakfast in Bangalore I experienced mild burning chest discomfort. I did not
+        connect it to anything cardiac at the time — I assumed it was digestive. I drove from
+        Bangalore that night, departing around 11 pm, stopping twice to charge the car, arriving
+        at approximately 3:50 am on 19 October.
+      </p>
+
+      <h3 style="font-size:13px;font-weight:700;color:#0F172A;margin:14px 0 6px;">19 October 2026, early morning — First clinic</h3>
+      <p style="font-size:12px;color:#475569;line-height:1.6;margin-bottom:10px;">
+        On waking the same burning returned and persisted for more than 30 minutes. I drove myself
+        to a nearby emergency clinic. An ECG was done and I received ketorolac plus two other
+        injections — the clinic treated it as a possible gastric problem. The discomfort subsided.
+        I want to be clear: I am stating this as a timing observation only, not as my conclusion
+        about what caused the relief.
+      </p>
+      <p style="font-size:12px;color:#475569;line-height:1.6;margin-bottom:10px;">
+        <strong>I have a documented allergy to ketorolac.</strong> Facial and eye swelling appeared
+        approximately two hours after the injection. This is recorded in the Manipal Hospital
+        discharge summary exactly as: "Allergy to KETOROLAL."
+      </p>
+
+      <h3 style="font-size:13px;font-weight:700;color:#0F172A;margin:14px 0 6px;">19 October 2026 — Decision to go to Manipal</h3>
+      <p style="font-size:12px;color:#475569;line-height:1.6;margin-bottom:10px;">
+        My son independently checked the ECG photograph using an AI assistant. The response
+        suggested a possible cardiac event. That was a prompt for concern — not a clinical
+        diagnosis. The family decided together to go to Manipal Hospital Salem. I drove myself there.
+      </p>
+
+      <h3 style="font-size:13px;font-weight:700;color:#0F172A;margin:14px 0 6px;">19 October 2026 — Manipal Hospital: admission and procedure</h3>
+      <p style="font-size:12px;color:#475569;line-height:1.6;margin-bottom:10px;">
+        After a troponin result flagged as abnormal and two further ECGs, the team advised
+        admission for an angiogram. After the angiogram was completed — more than ten hours after
+        admission — I was asked on the procedure table whether to proceed with a stent.
+        I was told placing it then was preferable to delaying. I agreed. A stent was placed in
+        the LCX artery (Xience Sky, 3.0mm × 28mm). I felt stable throughout. I am not presenting
+        that as evidence that no cardiac event occurred — it is context for the reviewer to weigh.
+      </p>
+
+      <h3 style="font-size:13px;font-weight:700;color:#0F172A;margin:14px 0 6px;">What I am bringing to you</h3>
+      <p style="font-size:12px;color:#475569;line-height:1.6;margin-bottom:6px;">
+        I have several questions I have not been able to resolve from the records alone:
+      </p>
+      <ul style="font-size:12px;color:#475569;line-height:1.8;padding-left:18px;margin-bottom:10px;">
+        <li>Does the complete evidence satisfy the diagnostic criteria for NSTEMI?</li>
+        <li>Was the stent fully expanded? (No IVUS/OCT was performed)</li>
+        <li>Did the ketorolac reaction play any role in the cardiac findings?</li>
+        <li>Was same-sitting PCI the most appropriate decision given the clinical picture?</li>
+        <li>Is my current medication regimen optimal?</li>
+      </ul>
+      <p style="font-size:12px;color:#475569;line-height:1.6;">
+        The computational analysis on the <a href="analysis.html">QCA Analysis page</a> is my
+        attempt to get an independent data point on the stenosis severity. It has significant
+        limitations — which are documented in full.
+      </p>
+
+    </div><!-- /tab-narrative -->
+
+    <!-- ── Tab: Timeline ── -->
+    <div id="tab-timeline" class="tab-pane">
+
+      <div class="timeline">
+
+        <div class="tl-item teal">
+          <div class="tl-date">September 2026</div>
+          <div class="tl-title">Pre-event ECG <span class="tag unverif">document pending</span></div>
+          <div class="tl-body">ECG taken approximately 6 weeks before the event. To be added from Google Drive.</div>
         </div>
-        <div class="alert warning">
-          <strong>Documented ketorolac allergy</strong>
-          Manipal Hospital discharge summary records allergy to ketorolac. Patient received ketorolac
-          at Aishwaryam Emergency prior to Manipal admission. Facial and eye swelling followed.
-          Timeline requires verification against medication chart.
+
+        <div class="tl-item blue">
+          <div class="tl-date">November 2026 (pre-event)</div>
+          <div class="tl-title">Annual Health Checkup <span class="tag unverif">document pending</span></div>
+          <div class="tl-body">Full health checkup results including lipid profile, blood work. To be added from Google Drive.</div>
+        </div>
+
+        <div class="tl-item amber">
+          <div class="tl-date">18 October 2026</div>
+          <div class="tl-title">First symptoms — Bangalore</div>
+          <div class="tl-body">Mild burning chest discomfort during breakfast. Not recognised as cardiac. Late-night drive to Salem.</div>
+        </div>
+
+        <div class="tl-item red">
+          <div class="tl-date">19 October 2026 · ~5:45 am</div>
+          <div class="tl-title">Symptoms return — emergency clinic</div>
+          <div class="tl-body">Drove self to emergency clinic. ECG done (borderline, 6:08 am). Received ketorolac — documented allergy. Allergic reaction: facial/eye swelling.</div>
+        </div>
+
+        <div class="tl-item red">
+          <div class="tl-date">19 October 2026 · ~7:18 am</div>
+          <div class="tl-title">Manipal Hospital — admission</div>
+          <div class="tl-body">Troponin T 64 ng/L (flagged, single draw, 7:44 am). ECG: sinus tachycardia, otherwise normal. Echo 4:49 pm: LVEF 60%, no RWMA.</div>
+        </div>
+
+        <div class="tl-item red">
+          <div class="tl-date">19 October 2026 · ~5:34 pm</div>
+          <div class="tl-title">Angiogram + stent procedure</div>
+          <div class="tl-body">Operator finding: LCX ~90% mid-segment stenosis. Stent deployed: Xience Sky 3.0×28mm. TIMI III flow confirmed. Decision made on procedure table.</div>
+        </div>
+
+        <div class="tl-item green">
+          <div class="tl-date">21 October 2026</div>
+          <div class="tl-title">Discharge</div>
+          <div class="tl-body">Echo: LVEF 60%, trivial MR. Discharged on DAPT + beta-blocker + ACE inhibitor + statin + ivabradine. Physical departure 22 Oct (insurance delay).</div>
+        </div>
+
+        <div class="tl-item blue">
+          <div class="tl-date">26 October 2026</div>
+          <div class="tl-title">Post-discharge consultation <span class="tag unverif">notes pending</span></div>
+          <div class="tl-body">Consultation with cardiologist. Medication review. Details to be added.</div>
+        </div>
+
+        <div class="tl-item purple">
+          <div class="tl-date">4–17 November 2026</div>
+          <div class="tl-title">AngioPy computational analysis</div>
+          <div class="tl-body">Self-initiated QCA analysis using DICOM files from hospital CD. 8 tasks across 4 phases. Cross-projection mean: 74.7% DS. Spider view excluded.</div>
+        </div>
+
+        <div class="tl-item teal">
+          <div class="tl-date">November 2026 (post-event)</div>
+          <div class="tl-title">Annual Health Checkup <span class="tag unverif">document pending</span></div>
+          <div class="tl-body">Post-event health checkup. Comparison with pre-event results. To be added from Google Drive.</div>
+        </div>
+
+        <div class="tl-item slate">
+          <div class="tl-date">Ongoing</div>
+          <div class="tl-title">Recovery and fitness</div>
+          <div class="tl-body">Daily walking programme. Data from iPhone Health app. Details on Health History page.</div>
+        </div>
+
+      </div>
+    </div><!-- /tab-timeline -->
+
+    <!-- ── Tab: Documented Facts ── -->
+    <div id="tab-facts" class="tab-pane">
+      <p class="text-muted" style="margin-bottom:12px;">These are facts directly documented in hospital records. Where I distinguish them from my personal recollection, that distinction is preserved.</p>
+      <table class="data-table">
+        <thead><tr><th>Item</th><th>Documented value</th><th>Source</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Troponin T</td><td>64 ng/L (flagged abnormal, ref &lt;50)</td><td>Manipal lab, 7:44 am</td><td>Single draw. Assay platform not stated. No serial value.</td></tr>
+          <tr><td>ECG — emergency clinic</td><td>Minimal anterolateral ST depression, borderline</td><td>Emergency clinic, 6:08 am</td><td>Automated interpretation. Original waveform not reviewed independently.</td></tr>
+          <tr><td>ECG — Manipal Emergency</td><td>Sinus tachycardia, otherwise normal. Rate 102 bpm</td><td>Manipal, ~7:18 am</td><td></td></tr>
+          <tr><td>ECG — Manipal CCU</td><td>Sinus tachycardia, otherwise normal. Rate 104 bpm</td><td>Manipal, 9:58 am</td><td></td></tr>
+          <tr><td>Echocardiogram ×1</td><td>LVEF 60%, no RWMA, Grade I diastolic dysfunction</td><td>Manipal, 4:49 pm</td><td>Tachycardia during study noted.</td></tr>
+          <tr><td>Angiogram — LCX</td><td>~90% mid-segment stenosis</td><td>Operator estimate</td><td>Visual estimate. Not quantitative QCA.</td></tr>
+          <tr><td>Angiogram — LAD</td><td>~30% stenosis</td><td>Operator estimate</td><td>Not treated.</td></tr>
+          <tr><td>Angiogram — RCA</td><td>~30% proximal stenosis</td><td>Operator estimate</td><td>Not treated.</td></tr>
+          <tr><td>Angiogram — LMCA</td><td>Normal</td><td>Operator</td><td></td></tr>
+          <tr><td>Stent</td><td>Xience Sky 3.0×28mm, LCX extending into OM</td><td>PCI report + discharge summary</td><td>No kissing balloon. No IVUS/OCT.</td></tr>
+          <tr><td>Echocardiogram ×2</td><td>LVEF 60%, no RWMA, trivial MR</td><td>Manipal, 21 Oct</td><td>Trivial MR new finding on this echo.</td></tr>
+          <tr><td>Allergy</td><td>Ketorolac (spelled "KETOROLAL" in discharge summary)</td><td>Manipal discharge summary</td><td>Received ketorolac at first clinic prior to Manipal.</td></tr>
+          <tr><td>Discharge medications</td><td>Xygrel + Ecosprin (DAPT), Carvistar, Hopace, Ivabrad, Astin 80mg</td><td>Discharge summary</td><td>May have been modified at 26 Oct consultation.</td></tr>
+        </tbody>
+      </table>
+    </div><!-- /tab-facts -->
+
+    <!-- ── Tab: My Questions ── -->
+    <div id="tab-questions" class="tab-pane">
+      <p class="text-muted" style="margin-bottom:12px;">These are the questions I am bringing to an independent cardiologist. I am not suggesting any particular answer — I want these reviewed against the original records and cines.</p>
+      <table class="data-table">
+        <thead><tr><th>#</th><th>My question</th><th>Why I am asking</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Does the complete evidence satisfy NSTEMI diagnostic criteria?</td><td>Single mildly elevated troponin, borderline ECG, normal LVEF, no RWMA. I have not independently accepted this diagnosis.</td></tr>
+          <tr><td>2</td><td>Was the stent fully expanded?</td><td>No IVUS or OCT was performed. Post-stent MLD could not be computed from the angiogram (see QCA page).</td></tr>
+          <tr><td>3</td><td>Did the ketorolac allergic reaction contribute to the cardiac findings?</td><td>Anaphylaxis-related Kounis syndrome can produce troponin elevation and ST changes. The timing is relevant.</td></tr>
+          <tr><td>4</td><td>Was same-sitting PCI appropriate given the clinical picture?</td><td>I waited 10+ hours after admission. The decision was made on the procedure table without prior discussion of alternatives.</td></tr>
+          <tr><td>5</td><td>Is my current medication regimen optimal?</td><td>Ivabradine was added — I would like to understand the indication in my specific case.</td></tr>
+          <tr><td>6</td><td>What does the LAD narrowing represent?</td><td>The computational analysis could not verify branch identity. Is the ~30% clinical finding the LAD mainstem or a diagonal?</td></tr>
+          <tr><td>7</td><td>Should the RCA narrowing be followed up?</td><td>~30% proximal, concordant with computational result. Dominant RCA. Is FFR warranted?</td></tr>
+        </tbody>
+      </table>
+    </div><!-- /tab-questions -->
+
+    <!-- ── Tab: Where I Am Now ── -->
+    <div id="tab-now" class="tab-pane">
+
+      <div class="flex-row" style="align-items:flex-start;gap:14px;">
+        <div style="flex:1;min-width:220px;">
+          <div class="section-title" style="border:none;padding:0;margin-bottom:8px;"><div class="dot" style="background:#059669;"></div>Current Medications</div>
+          <table class="data-table">
+            <thead><tr><th>Drug</th><th>Class</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Xygrel (clopidogrel)</td><td>Antiplatelet</td><td><span class="tag done">current</span></td></tr>
+              <tr><td>Ecosprin (aspirin)</td><td>Antiplatelet</td><td><span class="tag done">current</span></td></tr>
+              <tr><td>Carvistar (carvedilol)</td><td>Beta-blocker</td><td><span class="tag unverif">verify at next consult</span></td></tr>
+              <tr><td>Hopace (ramipril)</td><td>ACE inhibitor</td><td><span class="tag unverif">verify at next consult</span></td></tr>
+              <tr><td>Ivabrad (ivabradine)</td><td>Heart rate agent</td><td><span class="tag unverif">verify at next consult</span></td></tr>
+              <tr><td>Astin 80mg (atorvastatin)</td><td>Statin</td><td><span class="tag done">current</span></td></tr>
+            </tbody>
+          </table>
+          <p class="text-muted mt8">Regimen as of discharge 21 Oct. May have been modified at the 26 Oct consultation — to be verified.</p>
+        </div>
+
+        <div style="flex:1;min-width:220px;">
+          <div class="section-title" style="border:none;padding:0;margin-bottom:8px;"><div class="dot" style="background:#0070F2;"></div>Fitness &amp; Recovery <span class="tag unverif">data pending</span></div>
+          <div class="alert info">
+            <strong>Walking programme data to be added</strong>
+            Daily step count and walking distance from iPhone Health app since discharge.
+            Data exists in Gemini and ChatGPT "Healthy Sunder" project — to be consolidated
+            from Google Drive and added here.
+          </div>
+          <div class="alert info" style="margin-top:8px;">
+            <strong>Post-event consultations to be added</strong>
+            Notes and outcomes from consultations after discharge, including any medication
+            changes. To be added from Google Drive.
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Analysis method -->
-  <div class="section">
-    <div class="section-title"><div class="dot" style="background:#7C3AED;"></div>Analysis Method</div>
-    <table class="data-table">
-      <thead><tr><th>Component</th><th>Role</th><th>What it did</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Sundar</strong></td><td>Patient / Director</td><td>Provided DICOM data, directed all agents, reviewed all outputs, made all decisions</td></tr>
-        <tr><td><strong>Claude Code</strong> (Anthropic)</td><td>Primary executor</td><td>Script development, QCA computation, seed placement (scripted runs), report writing</td></tr>
-        <tr><td><strong>OpenAI Dot</strong></td><td>Visual QC reviewer</td><td>Independent overlay review, mask quality assessment, vessel identification</td></tr>
-        <tr><td><strong>Gemini 2.5 Pro</strong> (Google)</td><td>DICOM discovery</td><td>Identified RCA cines mislabelled as LCA; confirmed gantry angles</td></tr>
-        <tr><td><strong>AngioPy</strong> (EPFL)</td><td>Segmentation engine</td><td>PyTorch vessel segmentation, diameter profile extraction, QCA metrics</td></tr>
-      </tbody>
-    </table>
-    <p class="text-muted mt8">Reference: Mahendiran et al., <em>Int J Cardiol</em> 2024, doi:10.1016/j.ijcard.2024.132598 · Weights: Zenodo 13848135 · Commit: bd42ec3a</p>
-  </div>
+    </div><!-- /tab-now -->
 
-  <!-- Navigation cards -->
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:4px;">
+  </div><!-- /section -->
+
+  <!-- Navigation to next section -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px;">
+    <a href="history.html" style="text-decoration:none;">
+      <div class="section" style="margin-bottom:0;cursor:pointer;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:3px;">Health History →</div>
+        <div style="font-size:11px;color:#475569;">Pre-event ECGs, health checkup, fitness data, post-event consultations</div>
+      </div>
+    </a>
     <a href="analysis.html" style="text-decoration:none;">
-      <div class="section" style="margin-bottom:0;cursor:pointer;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
-        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:4px;">Architecture &amp; Pipeline →</div>
-        <div style="font-size:11px;color:#475569;">System components, data flows, analysis phases, QCA results summary</div>
-      </div>
-    </a>
-    <a href="images.html" style="text-decoration:none;">
-      <div class="section" style="margin-bottom:0;cursor:pointer;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
-        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:4px;">Segmentation Gallery →</div>
-        <div style="font-size:11px;color:#475569;">All overlay images, diameter profiles, frame surveys per projection</div>
-      </div>
-    </a>
-    <a href="dicom.html" style="text-decoration:none;">
-      <div class="section" style="margin-bottom:0;cursor:pointer;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
-        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:4px;">DICOM Viewer →</div>
-        <div style="font-size:11px;color:#475569;">Browser-based access to all 29 raw cines from the hospital CD</div>
+      <div class="section" style="margin-bottom:0;cursor:pointer;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:3px;">QCA Analysis →</div>
+        <div style="font-size:11px;color:#475569;">Independent computational analysis — AngioPy segmentation results</div>
       </div>
     </a>
     <a href="report.html" style="text-decoration:none;">
-      <div class="section" style="margin-bottom:0;cursor:pointer;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
-        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:4px;">Full Report →</div>
-        <div style="font-size:11px;color:#475569;">Complete 32-page PDF with clinical narrative, all findings, and audit trail</div>
+      <div class="section" style="margin-bottom:0;cursor:pointer;" onmouseover="this.style.boxShadow='0 4px 14px rgba(0,112,242,0.15)'" onmouseout="this.style.boxShadow=''">
+        <div style="font-size:13px;font-weight:700;color:#0070F2;margin-bottom:3px;">Full Report →</div>
+        <div style="font-size:11px;color:#475569;">Complete 32-page PDF with all findings and audit trail</div>
       </div>
     </a>
   </div>
 
 </div>
+
+<script>
+function showTab(id, el) {
+  document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('visible'));
+  el.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('visible');
+}
+</script>
 </body>
 </html>
